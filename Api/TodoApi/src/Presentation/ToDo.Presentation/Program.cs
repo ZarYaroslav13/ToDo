@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using ToDo.Infrastructure;
+using ToDo.Presentation.Endpoints;
 using ToDo.Presentation.Extensions.HostBuilder;
 using ToDo.Presentation.Extensions.Middlewares;
 
@@ -65,6 +66,8 @@ app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 
+var endpointsGroup = app.MapGroup("/");
+EndpointsProvider.RegisterAppEndpoints(endpointsGroup);
 app.MapGet("/hello", () =>
     {
         return "Hello World!";

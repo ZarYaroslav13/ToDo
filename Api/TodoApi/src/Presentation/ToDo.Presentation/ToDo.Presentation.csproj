@@ -24,7 +24,9 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Endpoints\" />
+      <Folder Include="Endpoints\Authorization\" />
+      <Folder Include="Endpoints\Tasks\" />
+      <Folder Include="Endpoints\Users\" />
     </ItemGroup>
 
 </Project>
