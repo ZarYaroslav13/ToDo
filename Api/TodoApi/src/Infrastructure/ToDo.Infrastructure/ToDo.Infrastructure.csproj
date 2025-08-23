@@ -11,4 +11,8 @@
       <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.8" />
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\..\Core\ToDo.Domain\ToDo.Domain.csproj" />
+    </ItemGroup>
+
 </Project>
