@@ -23,18 +23,20 @@ export const Login = () => {
         <form className={styles.Login}>
             <h1 className={styles.Title}><strong>Login</strong></h1>
 
-            <input
-                required
-                className={styles.Input}
-                type="email"
-                name="emailInput"
-                placeholder="Email"
-                autoComplete="on"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-            />
+            <div  className={styles.InputWrapper}>
+                <input
+                    required
+                    className={styles.Input}
+                    type="email"
+                    name="emailInput"
+                    placeholder="Email"
+                    autoComplete="on"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                />
+            </div>
 
-            <div className={styles.PasswordWrapper}>
+            <div className={styles.InputWrapper}>
                 <input
                     type={type}
                     name="password"

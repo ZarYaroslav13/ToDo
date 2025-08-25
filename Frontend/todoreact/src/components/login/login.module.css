@@ -17,19 +17,13 @@
     text-align: center;
 }
 
-.Input{
-    align-self: center;
-    font-size: large;
-    width: 50%;
-}
-
-.PasswordWrapper {
+.InputWrapper {
     position: relative;
     width: 50%;
     align-self: center;
 }
 
-.PasswordWrapper input {
+.InputWrapper input {
     width: 100%;
     font-size: large;
 }
