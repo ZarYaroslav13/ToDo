@@ -7,6 +7,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="MediatR" Version="13.0.0" />
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.19"/>
         <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.19" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.19">
@@ -18,15 +19,16 @@
           <PrivateAssets>all</PrivateAssets>
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
+        <PackageReference Include="MinimalApis.Extensions" Version="0.11.0" />
+        <PackageReference Include="MiniValidation" Version="0.9.2" />
         <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2"/>
     </ItemGroup>
 
     <ItemGroup>
       <Folder Include="Endpoints\Authorization\" />
       <Folder Include="Endpoints\Tasks\" />
-      <Folder Include="Endpoints\Users\" />
-      <Folder Include="Features\Users\Commands\LoginUser\" />
       <Folder Include="Features\Users\Queries\" />
+      <Folder Include="Features\Users\Services\TokenService\" />
     </ItemGroup>
 
 </Project>

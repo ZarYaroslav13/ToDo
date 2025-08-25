@@ -1,5 +1,5 @@
 using Microsoft.OpenApi.Models;
-using ToDo.API;
+using MiniValidation;
 using ToDo.API.Endpoints;
 using ToDo.API.Extensions.HostBuilder;
 using ToDo.API.Extensions.Middlewares;
@@ -64,7 +64,8 @@ app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 
-var endpointsGroup = app.MapGroup("/");
+var endpointsGroup = app.MapGroup("/")
+    .WithParameterValidation();
 EndpointsProvider.RegisterAppEndpoints(endpointsGroup);
 app.MapGet("/hello", () =>
     {

@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using ToDo.API.Features.Users.Services.UserService;
 using ToDo.API.Infrastructure;
 
 namespace ToDo.API.Extensions.HostBuilder;
@@ -12,8 +13,9 @@ public static class AddServicesConfigurationHostBuilderExtensions
 
         services
             .AddDbConnection(configuration)
-            .AddDomainServices();
-        
+            .AddFeaturesServices();
+
+        services.AddMediator();
         
         return builder;
     }
@@ -31,8 +33,9 @@ public static class AddServicesConfigurationHostBuilderExtensions
         return services;
     }
 
-    private static IServiceCollection AddDomainServices(this IServiceCollection services)
+    private static IServiceCollection AddFeaturesServices(this IServiceCollection services)
     {
+        services.AddScoped<IUserService, UserService>();
         /*var servicesTypes = typeof(IService);
 
         var domainServices = servicesTypes.Assembly
@@ -50,6 +53,15 @@ public static class AddServicesConfigurationHostBuilderExtensions
             if (servicesTypes.IsAssignableFrom(domainService.Service))
                 services.AddTransient(domainService.Service, domainService.Implementation);
         }*/
+
+        return services;
+    }
+    
+    private static IServiceCollection AddMediator(this IServiceCollection services)
+    {
+        services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(AppDomain.CurrentDomain.GetAssemblies()));
+
+        //services.AddSingleton(typeof(IPipelineBehavior<,>), typeof(LoggingBehaviour<,>));
 
         return services;
     }
