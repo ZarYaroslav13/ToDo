@@ -18,7 +18,7 @@ namespace ToDo.API.Infrastructure.Migrations
                 columns: new[] { "Id", "Email", "Name", "Password", "Surname" },
                 values: new object[,]
                 {
-                    { 1, "JohnDoeEmail123@gmail.com", "John", "John123", "Doe" },
+                    { 1, "JohnDoeEmail123@gmail.com", "John", "John12345", "Doe" },
                     { 2, "AliceSmith456@gmail.com", "Alice", "Alice456", "Smith" },
                     { 3, "RobertJ789@gmail.com", "Robert", "Robert789", "Johnson" },
                     { 4, "EmilyBrown101@gmail.com", "Emily", "Emily101", "Brown" },

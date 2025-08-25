@@ -7,6 +7,6 @@ public static class EndpointsProvider
 {
     public static void RegisterAppEndpoints(RouteGroupBuilder endpointsBuilder)
     {
-        endpointsBuilder.Register<LoginEndpoint>();
+        endpointsBuilder.Register<LoginBaseEndpoint>();
     }
 }

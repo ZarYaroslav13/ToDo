@@ -13,7 +13,7 @@ public static class DbSeeder
             Name = "John",
             Surname = "Doe",
             Email = "JohnDoeEmail123@gmail.com",
-            Password = "John123"
+            Password = "John12345"
         },
         new()
         {
