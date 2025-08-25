@@ -6,7 +6,7 @@ using IResult = ToDo.API.Wrappers.Result.IResult;
 
 namespace ToDo.API.Features.Users.Services.UserService;
 
-public class UserService : IUserService
+public class UserService : BaseService, IUserService
 {
     private readonly DbSet<User> _users;
     private readonly AppDbContext _context;
@@ -19,48 +19,50 @@ public class UserService : IUserService
     
     public async Task<Result<string>> Login(string email, string password)
     {
-        var user = await _users.FirstOrDefaultAsync(u => u.Email == email && u.Password == password);
+        return await ExecuteAsync(async () =>
+        {
+            var user = await _users.FirstOrDefaultAsync(u => u.Email == email && u.Password == password);
         
-        return 
-            user == null 
-                ? Result<string>.Fail(message:"email or password wrong") 
-                : Result<string>.Success(data:"token", message:"Logged successfully");
+            return 
+                user == null 
+                    ? Result<string>.Fail(message:"email or password wrong") 
+                    : Result<string>.Success(data:"token", message:"Logged successfully");
+        });
     }
 
-    public async Task<Result<User>> Register(User user)
+    public async Task<IResult> Register(User user)
     {
-        if(user == null)
-            return Result<User>.Fail("User is null");
+        return await ExecuteAsync(async () =>
+        {
+            if(user == null)
+                return Result<User>.Fail("User is null");
         
-        if(_users.Any(u => u.Email == user.Email))
-            return Result<User>.Fail("Email is already registered");
+            if(_users.Any(u => u.Email == user.Email))
+                return Result<User>.Fail("Email is already registered");
         
-        await _users.AddAsync(user);
+            await _users.AddAsync(user);
         
-        await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync();
         
-        return Result<User>.Success(user);
+            return Result.Success("User created successfully");
+        });
     }
 
     public async Task<Result<User>> Update(User user)
     {
-        try
+        return await ExecuteAsync(async () =>
         {
             _users.Update(user);
 
             await _context.SaveChangesAsync();
             
             return Result<User>.Success(user,"User updated successfully");
-        }
-        catch (Exception e)
-        {
-            return Result<User>.Fail(e.Message);
-        }
+        });
     }
 
     public async Task<IResult> Delete(int userId)
     {
-        try
+        return await ExecuteAsync(async () =>
         {
             var user = await _users.FindAsync(userId);
 
@@ -69,12 +71,6 @@ public class UserService : IUserService
             await _context.SaveChangesAsync();
             
             return Result.Success("User deleted successfully");
-        }
-        catch (Exception e)
-        {
-            return Result.Fail(e.Message);
-        }
+        });
     }
-    
-    
 }

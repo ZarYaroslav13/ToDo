@@ -8,7 +8,7 @@ public interface IUserService
 {
     public Task<Result<string>> Login(string email, string password);
     
-    public Task<Result<User>> Register(User user);
+    public Task<IResult> Register(User user);
     
     public Task<Result<User>> Update(User user);
     

@@ -7,8 +7,11 @@ namespace ToDo.API.Endpoints.Base;
 public abstract class BaseEndpoint<TRequest> : IEndpoint
 {
     public abstract string EndpointUrl { get; }
-    
-    public abstract void Register(IEndpointRouteBuilder builder);
+
+    public virtual void Register(IEndpointRouteBuilder builder)
+    {
+        builder.MapPost(EndpointUrl, Handle);
+    }
 
     public virtual async Task<IResult> Handle(
         [FromBody]TRequest request, 
