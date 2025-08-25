@@ -25,6 +25,8 @@
       <Folder Include="Endpoints\Authorization\" />
       <Folder Include="Endpoints\Tasks\" />
       <Folder Include="Endpoints\Users\" />
+      <Folder Include="Features\Users\Commands\LoginUser\" />
+      <Folder Include="Features\Users\Queries\" />
     </ItemGroup>
 
 </Project>
