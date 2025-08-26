@@ -16,6 +16,4 @@ public class GetUserInformationEndpoint : BaseEndpoint<GetUserInformationQuery>
             return await base.HandleAsync(new (){ UserId = id}, mediator, cancellationToken);
         };
     }
-
-    protected override Action<RouteHandlerBuilder>? ConfigureEndpoint { get; } = builder => builder.RequireAuthorization();
 }

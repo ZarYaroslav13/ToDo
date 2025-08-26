@@ -16,7 +16,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(option =>
 {
-    option.SwaggerDoc("v1", new OpenApiInfo { Title = "FinanceManagerApi", Version = "v1" });
+    option.SwaggerDoc("v1", new OpenApiInfo { Title = "ToDoAPI", Version = "v1" });
     option.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         Name = "Authorization",
@@ -63,14 +63,8 @@ app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 
-var endpointsGroup = app.MapGroup("/")
+var endpointsGroup = app.MapGroup("/ToDo")
     .WithParameterValidation();
 EndpointsProvider.RegisterAppEndpoints(endpointsGroup);
-app.MapGet("/hello", () =>
-    {
-        return "Hello World!";
-    })
-    .WithName("HelloEndpoint")
-    .WithOpenApi();
 
 app.Run();

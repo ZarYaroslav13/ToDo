@@ -11,13 +11,13 @@ public abstract class BaseEndpoint<TRequest> : IEndpoint
 
     protected virtual Delegate ConfigureHandler() => HandleAsync;
 
-    protected virtual Action<RouteHandlerBuilder>? ConfigureEndpoint { get; } = null;
+    protected virtual Action<RouteHandlerBuilder> ConfigureEndpoint { get; } = config => config.RequireAuthorization();
 
     public virtual void Register(IEndpointRouteBuilder builder)
     {
         var  endpointRouteBuilder = RegisterEndpoint(builder);
         
-        ConfigureEndpoint?.Invoke(endpointRouteBuilder);
+        ConfigureEndpoint.Invoke(endpointRouteBuilder);
     }
 
     public virtual async Task<IResult> HandleAsync(

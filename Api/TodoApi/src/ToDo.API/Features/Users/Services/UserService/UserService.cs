@@ -81,7 +81,15 @@ public class UserService : BaseService, IUserService
     {
         return await ExecuteAsync(async () =>
         {
-            _users.Update(user);
+            var existedUser = await _users.FindAsync(user.Id);
+            
+            string password = existedUser.Password;
+            
+            var entry = _context.Entry(existedUser);
+            
+            user.Password = password;
+            
+            entry.CurrentValues.SetValues(user);
 
             await _context.SaveChangesAsync();
             

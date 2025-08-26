@@ -12,5 +12,6 @@ public static class EndpointsProvider
         endpointsBuilder.Register<RegisterUserEndpoint>();
 
         endpointsBuilder.Register<GetUserInformationEndpoint>();
+        endpointsBuilder.Register<UpdateUserEndpoint>();
     }
 }
