@@ -7,6 +7,7 @@ namespace ToDo.API.Features.Users.Commands.UpdateUserPasswordCommand;
 public class UpdateUserPasswordCommand : IRequest<Wrappers.Result.IResult>
 {
     [Required]
+    [Range(1, int.MaxValue)]
     public int UserId { get; set; }
     
     [Required]

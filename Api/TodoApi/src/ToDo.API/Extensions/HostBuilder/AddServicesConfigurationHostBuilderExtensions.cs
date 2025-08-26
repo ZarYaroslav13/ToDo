@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using ToDo.API.Features.Commons.Behaviour;
+using ToDo.API.Features.Tasks.Services.UserTasksService;
 using ToDo.API.Features.Users.Services.TokenService;
 using ToDo.API.Features.Users.Services.UserService;
 using ToDo.API.Infrastructure;
@@ -55,7 +56,9 @@ public static class AddServicesConfigurationHostBuilderExtensions
     private static IServiceCollection AddFeaturesServices(this IServiceCollection services)
     {
         services.AddScoped<ITokenService, TokenService>();
+        
         services.AddScoped<IUserService, UserService>();
+        services.AddScoped<IUserTaskService, UserTaskService>();
         
         /*var servicesTypes = typeof(BaseService);
 
@@ -112,6 +115,4 @@ public static class AddServicesConfigurationHostBuilderExtensions
 
         return services;
     }
-
-
 }

@@ -3,9 +3,9 @@ using MediatR;
 using ToDo.API.Infrastructure.Entities;
 using ToDo.API.Wrappers.Result;
 
-namespace ToDo.API.Features.Users.Queries.GetUserInformation;
+namespace ToDo.API.Features.Tasks.Query.GetUserTasksCommand;
 
-public class GetUserInformationQuery : IRequest<Result<User>>
+public class GetUserTasksCommand : IRequest<Result<List<UserTask>>>
 {
     [Required]
     [Range(1, int.MaxValue)]

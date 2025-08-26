@@ -1,4 +1,5 @@
 ﻿using ToDo.API.Endpoints.Authorization;
+using ToDo.API.Endpoints.Tasks;
 using ToDo.API.Endpoints.Users;
 using ToDo.API.Extensions.Endpoints;
 
@@ -15,5 +16,10 @@ public static class EndpointsProvider
         endpointsBuilder.Register<UpdateUserEndpoint>();
         endpointsBuilder.Register<UpdateUserPasswordEndpoint>();
         endpointsBuilder.Register<DeleteUserEndpoint>();
+
+        endpointsBuilder.Register<GetUserTasksEndpoint>();
+        endpointsBuilder.Register<AddTaskEndpoint>();
+        endpointsBuilder.Register<UpdateTaskEndpoint>();
+        endpointsBuilder.Register<DeleteTaskEndpoint>();
     }
 }
