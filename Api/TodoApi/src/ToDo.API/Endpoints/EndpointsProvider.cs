@@ -13,5 +13,7 @@ public static class EndpointsProvider
 
         endpointsBuilder.Register<GetUserInformationEndpoint>();
         endpointsBuilder.Register<UpdateUserEndpoint>();
+        endpointsBuilder.Register<UpdateUserPasswordEndpoint>();
+        endpointsBuilder.Register<DeleteUserEndpoint>();
     }
 }

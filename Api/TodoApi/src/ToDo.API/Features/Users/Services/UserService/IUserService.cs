@@ -13,6 +13,7 @@ public interface IUserService
     public Task<Result<User>> GetInformation(int userId);
     
     public Task<Result<User>> Update(User user);
+    public Task<IResult> UpdatePassword(int userId,string oldPassword, string newPassword);
     
     public Task<IResult> Delete(int userId);
 }

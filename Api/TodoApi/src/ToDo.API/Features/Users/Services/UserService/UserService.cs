@@ -97,6 +97,23 @@ public class UserService : BaseService, IUserService
         });
     }
 
+    public async Task<IResult> UpdatePassword(int userId,string oldPassword, string newPassword)
+    {
+        return await ExecuteAsync(async () =>
+        {
+            var existedUser = await _users.FindAsync(userId);
+            
+            if(existedUser.Password != oldPassword)
+                throw new ArgumentException("Passwords do not match");
+            
+            existedUser.Password = newPassword;
+
+            await _context.SaveChangesAsync();
+            
+            return Result.Success("User password updated successfully");
+        });
+    }
+
     public async Task<IResult> Delete(int userId)
     {
         return await ExecuteAsync(async () =>
