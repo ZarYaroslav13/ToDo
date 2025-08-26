@@ -1,4 +1,5 @@
 ﻿using ToDo.API.Endpoints;
+using ToDo.API.Endpoints.Base;
 
 namespace ToDo.API.Extensions.Endpoints;
 
@@ -8,7 +9,9 @@ public static class RouteGroupBuilderExtenstion
         where T : IEndpoint, new()
     {
         var endpointsProvider = new T();
+        
         endpointsProvider.Register(endpointsBuilder);
+        
         return endpointsBuilder;
     }
 }

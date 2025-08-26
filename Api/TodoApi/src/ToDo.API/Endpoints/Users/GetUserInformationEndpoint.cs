@@ -9,13 +9,13 @@ public class GetUserInformationEndpoint : BaseEndpoint<GetUserInformationQuery>
     public override string EndpointUrl { get; } = "/users/{id:int}";
     public override EndpointHttpMethod EndpointHttpMethod { get; }  = EndpointHttpMethod.Get;
 
-    public override void Register(IEndpointRouteBuilder builder)
+    protected override Delegate ConfigureHandler()
     {
-        builder.MapGet(EndpointUrl, HandleAsync).RequireAuthorization();
+        return async (int id,  IMediator mediator, CancellationToken cancellationToken) =>
+        {
+            return await base.HandleAsync(new (){ UserId = id}, mediator, cancellationToken);
+        };
     }
 
-    public async Task<IResult> HandleAsync(int id, IMediator mediator, CancellationToken cancellationToken)
-    {
-        return await base.Handle(new GetUserInformationQuery(){ UserId = id}, mediator, cancellationToken);
-    }
+    protected override Action<RouteHandlerBuilder>? ConfigureEndpoint { get; } = builder => builder.RequireAuthorization();
 }

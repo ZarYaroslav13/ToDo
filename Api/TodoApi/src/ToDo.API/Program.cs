@@ -1,5 +1,4 @@
 using Microsoft.OpenApi.Models;
-using MiniValidation;
 using ToDo.API.Endpoints;
 using ToDo.API.Extensions.HostBuilder;
 using ToDo.API.Extensions.Middlewares;

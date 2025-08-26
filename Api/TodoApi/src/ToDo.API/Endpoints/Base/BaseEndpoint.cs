@@ -9,30 +9,18 @@ public abstract class BaseEndpoint<TRequest> : IEndpoint
     public abstract string EndpointUrl { get; }
     public abstract EndpointHttpMethod EndpointHttpMethod { get; }
 
+    protected virtual Delegate ConfigureHandler() => HandleAsync;
+
+    protected virtual Action<RouteHandlerBuilder>? ConfigureEndpoint { get; } = null;
+
     public virtual void Register(IEndpointRouteBuilder builder)
     {
-        switch (EndpointHttpMethod)
-        {
-            case EndpointHttpMethod.Get:
-                builder.MapGet(EndpointUrl, Handle);
-                break;
-            case EndpointHttpMethod.Post:
-                builder.MapPost(EndpointUrl, Handle);
-                break;
-            case EndpointHttpMethod.Put:
-                builder.MapPut(EndpointUrl, Handle);
-                break;
-            case EndpointHttpMethod.Patch:
-                builder.MapPatch(EndpointUrl, Handle);
-                break;
-            case EndpointHttpMethod.Delete:
-                builder.MapDelete(EndpointUrl, Handle);
-                break;
-                
-        }
+        var  endpointRouteBuilder = RegisterEndpoint(builder);
+        
+        ConfigureEndpoint?.Invoke(endpointRouteBuilder);
     }
 
-    public virtual async Task<IResult> Handle(
+    public virtual async Task<IResult> HandleAsync(
         [FromBody]TRequest request, 
         IMediator mediator, 
         CancellationToken cancellationToken)
@@ -54,5 +42,26 @@ public abstract class BaseEndpoint<TRequest> : IEndpoint
         return baseResponse.Succeeded 
             ? Results.Ok(baseResponse) 
             : Results.BadRequest(baseResponse);
+    }
+
+    private RouteHandlerBuilder RegisterEndpoint(IEndpointRouteBuilder builder)
+    {
+        var handleAsync = ConfigureHandler();
+        
+        switch (EndpointHttpMethod)
+        {
+            case EndpointHttpMethod.Get:
+                return builder.MapGet(EndpointUrl, ConfigureHandler());
+            case EndpointHttpMethod.Post:
+                return builder.MapPost(EndpointUrl, handleAsync);
+            case EndpointHttpMethod.Put:
+                return builder.MapPut(EndpointUrl, handleAsync);
+            case EndpointHttpMethod.Patch:
+                return builder.MapPatch(EndpointUrl, handleAsync);
+            case EndpointHttpMethod.Delete:
+                return builder.MapDelete(EndpointUrl, handleAsync);
+            default:
+                throw new ArgumentException($"Invalid endpoint http method, cannot register endpoint with url {EndpointUrl} and http method {EndpointHttpMethod}");
+        }
     }
 }
