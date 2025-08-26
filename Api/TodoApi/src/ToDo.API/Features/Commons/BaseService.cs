@@ -2,7 +2,7 @@
 using IResult = ToDo.API.Wrappers.Result.IResult;
 
 
-namespace ToDo.API.Features.Users.Services;
+namespace ToDo.API.Features.Commons;
 
 public abstract class BaseService
 {

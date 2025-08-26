@@ -1,6 +1,8 @@
 ﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
+using ToDo.API.Features.Commons;
 using ToDo.API.Features.Commons.Behaviour;
+using ToDo.API.Features.Users.Services.TokenService;
 using ToDo.API.Features.Users.Services.UserService;
 using ToDo.API.Infrastructure;
 
@@ -13,6 +15,8 @@ public static class AddServicesConfigurationHostBuilderExtensions
         var services = builder.Services;
         var configuration = builder.Configuration as IConfiguration;
 
+        builder.AddOptions();
+
         services
             .AddDbConnection(configuration)
             .AddFeaturesServices();
@@ -21,6 +25,15 @@ public static class AddServicesConfigurationHostBuilderExtensions
         
         return builder;
     }
+    
+    private static IHostApplicationBuilder AddOptions(this IHostApplicationBuilder builder)
+    {
+        builder.Services.Configure<AuthOptions>(
+            builder.Configuration.GetSection(AuthOptions.Auth));
+
+        return builder;
+    }
+
     
     private static IServiceCollection AddDbConnection(this IServiceCollection services, IConfiguration configuration)
     {
@@ -37,10 +50,12 @@ public static class AddServicesConfigurationHostBuilderExtensions
 
     private static IServiceCollection AddFeaturesServices(this IServiceCollection services)
     {
+        services.AddScoped<ITokenService, TokenService>();
         services.AddScoped<IUserService, UserService>();
-        /*var servicesTypes = typeof(IService);
+        
+        /*var servicesTypes = typeof(BaseService);
 
-        var domainServices = servicesTypes.Assembly
+        var featuresServices = servicesTypes.Assembly
             .GetExportedTypes()
             .Where(t => t.IsClass && !t.IsAbstract)
             .Select(t => new
@@ -50,12 +65,12 @@ public static class AddServicesConfigurationHostBuilderExtensions
             })
             .Where(t => t != null);
 
-        foreach (var domainService in domainServices)
+        foreach (var featureService in featuresServices)
         {
-            if (servicesTypes.IsAssignableFrom(domainService.Service))
-                services.AddTransient(domainService.Service, domainService.Implementation);
-        }*/
-
+            if (servicesTypes.IsAssignableFrom(featureService.Service))
+                services.AddTransient(featureService.Service, featureService.Implementation);
+        }
+*/
         return services;
     }
     

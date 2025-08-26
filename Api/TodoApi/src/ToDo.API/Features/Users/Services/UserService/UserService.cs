@@ -1,4 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using ToDo.API.Features.Commons;
+using ToDo.API.Features.Users.Services.TokenService;
 using ToDo.API.Infrastructure;
 using ToDo.API.Infrastructure.Entities;
 using ToDo.API.Wrappers.Result;
@@ -10,11 +12,13 @@ public class UserService : BaseService, IUserService
 {
     private readonly DbSet<User> _users;
     private readonly AppDbContext _context;
+    private readonly ITokenService _tokenService;
 
-    public UserService(AppDbContext context)
+    public UserService(AppDbContext context, ITokenService tokenService)
     {
         _context = context ?? throw new ArgumentNullException(nameof(context));
         _users = context.Users;
+        _tokenService = tokenService ?? throw new ArgumentNullException(nameof(tokenService));; 
     }
     
     public async Task<Result<string>> Login(string email, string password)
@@ -22,11 +26,15 @@ public class UserService : BaseService, IUserService
         return await ExecuteAsync(async () =>
         {
             var user = await _users.FirstOrDefaultAsync(u => u.Email == email && u.Password == password);
-        
-            return 
-                user == null 
-                    ? Result<string>.Fail(message:"email or password wrong") 
-                    : Result<string>.Success(data:"token", message:"Logged successfully");
+
+            if (user == null)
+                return Result<string>.Fail(message: "email or password wrong");
+
+            var identity = _tokenService.GetUserIdentity(user);
+            
+            var token = _tokenService.CreateToken(identity); 
+            
+            return Result<string>.Success(data:token, message:"Logged successfully");
         });
     }
 
