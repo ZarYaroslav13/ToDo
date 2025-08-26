@@ -1,4 +1,6 @@
-﻿namespace ToDo.API.Endpoints;
+﻿using ToDo.API.Endpoints.Base;
+
+namespace ToDo.API.Endpoints;
 
 public interface IEndpoint
 {

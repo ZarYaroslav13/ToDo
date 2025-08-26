@@ -56,6 +56,27 @@ public class UserService : BaseService, IUserService
         });
     }
 
+    public async Task<Result<User>> GetInformation(int userId)
+    {
+        return await ExecuteAsync(async () =>
+        {
+            var user = await _users
+                .Include(u => u.Tasks)
+                .FirstOrDefaultAsync(u => u.Id == userId);
+
+            if(user == null)
+                throw new ArgumentException("User not found");
+            
+            return Result<User>.Success(new User()
+            {
+                Id = userId,
+                Name = user.Name,
+                Surname = user.Surname,
+                Email = user.Email,
+            });
+        });
+    }
+
     public async Task<Result<User>> Update(User user)
     {
         return await ExecuteAsync(async () =>

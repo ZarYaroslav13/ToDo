@@ -10,6 +10,8 @@ public interface IUserService
     
     public Task<IResult> Register(User user);
     
+    public Task<Result<User>> GetInformation(int userId);
+    
     public Task<Result<User>> Update(User user);
     
     public Task<IResult> Delete(int userId);

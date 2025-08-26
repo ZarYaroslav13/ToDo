@@ -6,4 +6,5 @@ namespace ToDo.API.Endpoints.Authorization;
 public class RegisterUserEndpoint : BaseEndpoint<RegisterUserCommand>
 {
     public override string EndpointUrl => "/authorization/register";
+    public override EndpointHttpMethod EndpointHttpMethod { get; }= EndpointHttpMethod.Post;
 }

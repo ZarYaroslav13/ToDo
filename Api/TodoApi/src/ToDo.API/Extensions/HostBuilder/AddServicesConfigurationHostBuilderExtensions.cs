@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
-using ToDo.API.Features.Commons;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 using ToDo.API.Features.Commons.Behaviour;
 using ToDo.API.Features.Users.Services.TokenService;
 using ToDo.API.Features.Users.Services.UserService;
@@ -20,7 +21,10 @@ public static class AddServicesConfigurationHostBuilderExtensions
         services
             .AddDbConnection(configuration)
             .AddFeaturesServices();
-
+        
+        services.AddJwtAuthentication(configuration);
+        services.AddAuthorization();
+        
         services.AddMediator();
         
         return builder;
@@ -82,4 +86,32 @@ public static class AddServicesConfigurationHostBuilderExtensions
 
         return services;
     }
+    
+    private static IServiceCollection AddJwtAuthentication(this IServiceCollection services, IConfiguration configuration)
+    {
+        AuthOptions authOptions = configuration.GetSection(AuthOptions.Auth).Get<AuthOptions>();
+
+        services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            .AddJwtBearer(options =>
+            {
+                options.SaveToken = true;
+
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+
+                    ValidIssuer = authOptions.ISSUER,
+                    ValidAudience = authOptions.AUDIENCE,
+
+                    IssuerSigningKey = authOptions.GetSymmetricSecurityKey(),
+                };
+            });
+
+        return services;
+    }
+
+
 }

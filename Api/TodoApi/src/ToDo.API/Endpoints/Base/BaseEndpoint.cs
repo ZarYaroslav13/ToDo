@@ -7,10 +7,29 @@ namespace ToDo.API.Endpoints.Base;
 public abstract class BaseEndpoint<TRequest> : IEndpoint
 {
     public abstract string EndpointUrl { get; }
+    public abstract EndpointHttpMethod EndpointHttpMethod { get; }
 
     public virtual void Register(IEndpointRouteBuilder builder)
     {
-        builder.MapPost(EndpointUrl, Handle);
+        switch (EndpointHttpMethod)
+        {
+            case EndpointHttpMethod.Get:
+                builder.MapGet(EndpointUrl, Handle);
+                break;
+            case EndpointHttpMethod.Post:
+                builder.MapPost(EndpointUrl, Handle);
+                break;
+            case EndpointHttpMethod.Put:
+                builder.MapPut(EndpointUrl, Handle);
+                break;
+            case EndpointHttpMethod.Patch:
+                builder.MapPatch(EndpointUrl, Handle);
+                break;
+            case EndpointHttpMethod.Delete:
+                builder.MapDelete(EndpointUrl, Handle);
+                break;
+                
+        }
     }
 
     public virtual async Task<IResult> Handle(
