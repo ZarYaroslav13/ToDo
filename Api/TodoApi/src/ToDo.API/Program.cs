@@ -63,7 +63,7 @@ app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 
-var endpointsGroup = app.MapGroup("/ToDo")
+var endpointsGroup = app.MapGroup("/todo")
     .WithParameterValidation();
 EndpointsProvider.RegisterAppEndpoints(endpointsGroup);
 
