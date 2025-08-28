@@ -1,13 +1,13 @@
 import axios from "axios";
 
 const authHttp = axios.create({
-    baseURL: `${import.meta.env.API_BASE_URL}/authorization`,
+    baseURL: `https://localhost:7239/todo/authorization`,
     headers: {"content-type": "application/json"},
     timeout: 5000,
 });
 
 const http = axios.create({
-    baseURL: import.meta.env.API_BASE_URL,
+    baseURL: "https://localhost:7239/todo",
     headers: { "Content-Type": "application/json" },
     timeout: 5000,
 });

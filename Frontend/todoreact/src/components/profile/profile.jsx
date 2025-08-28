@@ -1,5 +1,6 @@
 import styles from "./profile.module.css";
 import {Fragment, useState} from "react";
+import { useUserDomain } from "../../hooks/api/users"
 
 export const Profile = () => {
     const [userInfo, setUserInfo] = useState({
