@@ -1,9 +1,11 @@
 import { useState, useEffect } from "react";
 import { useUserDomain } from "../../hooks/api/users";
+import { useTasksDomain } from "../../hooks/api/tasks";
 import { useAuth } from "../authprovider/authprovider";
 
 export function useProfileViewModel() {
     const users = useUserDomain();
+    const tasks = useTasksDomain();
     const auth = useAuth();
 
     const [userInfo, setUserInfo] = useState(null);
@@ -29,9 +31,20 @@ export function useProfileViewModel() {
             }
         };
 
+        const fetchUserTasks = async () => {
+            try {
+                const data = await tasks.fetch(auth.user.Id);
+                setUserInfo((prev) => ({ ...prev, tasks: data }));
+            } catch (err) {
+                console.error("Failed to fetch user tasks info:", err);
+                setSnackbarMessage("Failed to fetch user info");
+                setSnackbarSeverity("error");
+                setSnackbarOpen(true);
+            }
+        };
 
+        fetchUser().then(fetchUserTasks);
 
-        fetchUser();
     }, [auth.user]);
 
     const closeSnackbar = () => setSnackbarOpen(false);
