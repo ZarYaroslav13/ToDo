@@ -3,16 +3,18 @@ import { Login } from "../login/login"
 import { Register } from "../register/register"
 import { Profile } from "../profile/profile"
 
+export const UrlAddresses = {
+    Home: "/",
+
+    Login: "/login",
+
+    Register: "/register",
+
+    Profile: "/profile",
+}
+
+
 export const Router = () => {
-    const UrlAddresses = {
-        Home: "/",
-
-        Login: "/login",
-
-        Register: "/register",
-
-        Profile: "/profile",
-    }
 
     return (
         <BrowserRouter>

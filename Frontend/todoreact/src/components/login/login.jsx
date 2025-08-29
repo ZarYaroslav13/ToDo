@@ -1,29 +1,41 @@
 import styles from "./login.module.css";
 import { useState } from "react";
-import { FaEye } from 'react-icons/fa';
-import { FaEyeSlash } from 'react-icons/fa';
+import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { useAuth } from "../authprovider/authprovider";
+import { UrlAddresses } from "../router/router";
+import { useNavigate } from "react-router-dom";
 
 export const Login = () => {
+    const auth = useAuth(); // useAuth() from AuthProvider
+    const navigate = useNavigate();
+
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const [type, setType] = useState("password");
     const [showPassword, setShowPassword] = useState(false);
+    const [error, setError] = useState(null);
 
     const handleToggle = () => {
-        if(showPassword) {
-            setShowPassword(false);
-            setType("password");
-        } else {
-            setShowPassword(true);
-            setType("text");
+        setShowPassword(!showPassword);
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setError(null);
+        try {
+            await auth.signIn({ email, password }); // use signIn from context
+            navigate(UrlAddresses.Profile);
+        } catch (err) {
+            setError(err.message || "Login failed");
         }
-    }
+    };
 
     return (
-        <form className={styles.Login}>
+        <form className={styles.Login} onSubmit={handleSubmit}>
             <h1 className={styles.Title}><strong>Login</strong></h1>
 
-            <div  className={styles.InputWrapper}>
+            {error && <p className={styles.Error}>{error}</p>}
+
+            <div className={styles.InputWrapper}>
                 <input
                     required
                     className={styles.Input}
@@ -38,7 +50,7 @@ export const Login = () => {
 
             <div className={styles.InputWrapper}>
                 <input
-                    type={type}
+                    type={showPassword ? "text" : "password"}
                     name="password"
                     placeholder="Password"
                     value={password}
@@ -50,8 +62,9 @@ export const Login = () => {
                 </span>
             </div>
 
-
-            <button className={styles.Button} type="submit">Login</button>
+            <button className={styles.Button} type="submit">
+                {auth.loading ? "Logging in..." : "Login"}
+            </button>
         </form>
     );
 };

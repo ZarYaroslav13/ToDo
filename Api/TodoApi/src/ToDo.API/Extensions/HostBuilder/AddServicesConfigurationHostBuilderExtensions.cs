@@ -23,10 +23,14 @@ public static class AddServicesConfigurationHostBuilderExtensions
             .AddDbConnection(configuration)
             .AddFeaturesServices();
         
-        services.AddJwtAuthentication(configuration);
-        services.AddAuthorization();
+        services
+            .AddJwtAuthentication(configuration)
+            .AddAuthorization();
+
+        services
+            .AddMediator();
         
-        services.AddMediator();
+        builder.AddCORS();
         
         return builder;
     }
@@ -81,15 +85,6 @@ public static class AddServicesConfigurationHostBuilderExtensions
         return services;
     }
     
-    private static IServiceCollection AddMediator(this IServiceCollection services)
-    {
-        services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(AppDomain.CurrentDomain.GetAssemblies()));
-
-        services.AddSingleton(typeof(IPipelineBehavior<,>), typeof(LoggingBehaviour<,>));
-
-        return services;
-    }
-    
     private static IServiceCollection AddJwtAuthentication(this IServiceCollection services, IConfiguration configuration)
     {
         AuthOptions authOptions = configuration.GetSection(AuthOptions.Auth).Get<AuthOptions>();
@@ -114,5 +109,40 @@ public static class AddServicesConfigurationHostBuilderExtensions
             });
 
         return services;
+    }
+    
+    
+    private static IServiceCollection AddMediator(this IServiceCollection services)
+    {
+        services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(AppDomain.CurrentDomain.GetAssemblies()));
+
+        services.AddSingleton(typeof(IPipelineBehavior<,>), typeof(LoggingBehaviour<,>));
+
+        return services;
+    }
+    
+    private static IHostApplicationBuilder AddCORS(this IHostApplicationBuilder builder)
+    {
+        var services = builder.Services;
+        var configuration = builder.Configuration as IConfiguration;
+        const string allowedOriginsSection = "AllowedOrigins";
+
+        var allowedOrigins = configuration
+            .GetSection(allowedOriginsSection)
+            .Get<string[]>();
+        
+        services.AddCors(options =>
+        {
+            options.AddPolicy("AllowCors",
+                policy =>
+                {
+                    policy.WithOrigins(allowedOrigins)
+                        .AllowAnyHeader()
+                        .AllowAnyMethod()
+                        .AllowCredentials();
+                });
+        });
+        
+        return builder;
     }
 }

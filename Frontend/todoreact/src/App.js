@@ -1,10 +1,13 @@
 import './App.css';
 import { Router } from "./components/router/router"
+import { AuthProvider } from "./components/authprovider/authprovider"
 
 function App() {
   return (
     <div className="App">
-        <Router/>
+        <AuthProvider>
+            <Router/>
+        </AuthProvider>
     </div>
   );
 }

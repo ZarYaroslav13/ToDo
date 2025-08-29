@@ -11,6 +11,7 @@ export function useUserDomain(){
         try {
             const data = await api.users.getInfo(id);
             setUser(data);
+            return data.data;
         } catch (error) {
             setErrorMessage("Failed to get user info. Please try again later.");
         } finally {

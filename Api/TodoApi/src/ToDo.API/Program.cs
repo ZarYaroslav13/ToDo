@@ -60,6 +60,8 @@ app.UseApplicationMiddleware();
 app.UseRouting();
 app.UseHttpsRedirection();
 
+app.UseCors("AllowCors");
+
 app.UseAuthentication();
 app.UseAuthorization();
 

@@ -1,14 +1,16 @@
 import axios from "axios";
 
 const authHttp = axios.create({
-    baseURL: `${process.env.REACT_APP_API_BASE_URL}/authorization`,
-    headers: {"content-type": "application/json"},
+    baseURL: `${process.env.REACT_APP_API_BASE_URL}authorization`,
+    headers: {
+        "content-type": "application/json"},
     timeout: 5000,
 });
 
 const http = axios.create({
     baseURL: process.env.REACT_APP_API_BASE_URL,
-    headers: { "Content-Type": "application/json" },
+    headers: {
+        "Content-Type": "application/json"},
     timeout: 5000,
 });
 
@@ -25,20 +27,14 @@ http.interceptors.response.use(({ data}) => data);
 export const api = {
     authorization:{
         register(data){
-            return authHttp()
+            return authHttp
                 .post("register", data);
         },
 
         async login(data){
-            const result = await http.post("login", data);
-
-            localStorage.setItem("token", result.token);
+            const result = await authHttp.post("login", data);
 
             return result;
-        },
-
-        logout() {
-            localStorage.removeItem("token");
         }
     },
 
@@ -55,8 +51,8 @@ export const api = {
             return http.put("users/update-user-password", data);
         },
 
-        delete(id){
-            const result = http.delete(`users/${id}`);
+        async delete(id){
+            const result = await  http.delete(`users/${id}`);
 
             if(result.status === 200){
                 localStorage.removeItem("token");
