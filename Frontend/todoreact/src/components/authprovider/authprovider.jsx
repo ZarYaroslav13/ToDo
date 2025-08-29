@@ -24,7 +24,6 @@ export const AuthProvider = ({ children }) => {
         setUser(null);
     };
 
-    // optional JWT expiration auto-logout
     useEffect(() => {
         if (!user) return;
         if (user.exp && Math.floor(Date.now() / 1000) > user.exp) {

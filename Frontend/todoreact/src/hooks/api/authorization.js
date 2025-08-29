@@ -15,7 +15,9 @@ export function useAuthorization() {
             localStorage.setItem("token", result.data.data);
 
             const decoded = jwtDecode(result.data.data);
-            return decoded; // return to context, don't keep local state here
+
+
+            return decoded;
         } catch (err) {
             setError(err.response?.data?.message || "Login failed");
             throw err;

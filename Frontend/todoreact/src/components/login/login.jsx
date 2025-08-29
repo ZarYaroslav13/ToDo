@@ -4,6 +4,8 @@ import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { useAuth } from "../authprovider/authprovider";
 import { UrlAddresses } from "../router/router";
 import { useNavigate } from "react-router-dom";
+import Snackbar, { SnackbarCloseReason } from '@mui/material/Snackbar';
+import Alert from '@mui/material/Alert';
 
 export const Login = () => {
     const auth = useAuth(); // useAuth() from AuthProvider
