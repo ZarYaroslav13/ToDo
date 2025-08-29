@@ -63,8 +63,12 @@ export const api = {
     },
 
     tasks:{
-        getUserTasks(id){
-            return http.get(`tasks/users/${id}`);
+        getUserTasks(userId){
+            return http.get(`tasks/users/${userId}`);
+        },
+
+        getUserTask(id){
+            return http.get(`tasks/${id}`);
         },
 
         create(data){

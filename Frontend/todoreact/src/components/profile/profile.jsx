@@ -1,60 +1,18 @@
 import styles from "./profile.module.css";
-import { useState, useEffect } from "react";
-import { useUserDomain } from "../../hooks/api/users";
 import Snackbar from '@mui/material/Snackbar';
-import { useAuth } from "../authprovider/authprovider";
 import Alert from '@mui/material/Alert';
+import { useProfileViewModel } from "./profileViewModel";
 
 export const Profile = () => {
-    const [snackbarOpen, setSnackbarOpen] = useState(true);
-    const [snackbarMessage, setSnackbarMessage] = useState("");
-    const users = useUserDomain();
-    const auth = useAuth();
-    const [userInfo, setUserInfo] = useState(null);
+    const {
+        userInfo,
+        snackbarOpen,
+        snackbarMessage,
+        snackbarSeverity,
+        closeSnackbar
+    } = useProfileViewModel();
 
-    useEffect(() => {
-        if (!auth.user?.Id) return;
-
-        const fetchUser = async () => {
-            try {
-                const data = await users.fetch(auth.user.Id);
-                setUserInfo(data);
-                setSnackbarMessage(`Welcome, ${data.name}`);
-                setSnackbarOpen(true);
-            } catch (err) {
-                console.error("Failed to fetch user info:", err);
-                setSnackbarMessage("Failed to fetch user info");
-                setSnackbarOpen(true);
-            }
-        };
-
-        fetchUser();
-    }, [auth.user]);
-
-    const handleCloseSnackbar = (_, reason) => {
-        if (reason === 'clickaway') return;
-        setSnackbarOpen(false);
-    };
-
-    if (!userInfo) {
-        console.log("User",auth.user);
-        return (
-            <>
-                <Snackbar open={snackbarOpen} autoHideDuration={6000} onClose={handleCloseSnackbar}>
-                    <Alert
-                        onClose={handleCloseSnackbar}
-                        severity="success"
-                        variant="filled"
-                        sx={{ width: '100%' }}
-                    >
-                        Name: {auth.user.Id}
-                        Message: {snackbarMessage}
-                    </Alert>
-                </Snackbar>
-                <p>Loading...</p>
-            </>
-        );
-    }
+    if (!userInfo) return <p>Loading...</p>;
 
     return (
         <>
@@ -80,9 +38,18 @@ export const Profile = () => {
             <Snackbar
                 open={snackbarOpen}
                 autoHideDuration={3000}
-                onClose={handleCloseSnackbar}
-                message={snackbarMessage}
-            />
+                onClose={closeSnackbar}
+                anchorOrigin={{ vertical: "top", horizontal: "center" }}
+            >
+                <Alert
+                    onClose={closeSnackbar}
+                    severity={snackbarSeverity}
+                    variant="filled"
+                    sx={{ width: '100%' }}
+                >
+                    {snackbarMessage}
+                </Alert>
+            </Snackbar>
         </>
     );
 };

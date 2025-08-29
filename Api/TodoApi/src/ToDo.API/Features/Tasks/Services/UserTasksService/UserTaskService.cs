@@ -30,6 +30,16 @@ public class UserTaskService : BaseService, IUserTaskService
             return Result<List<UserTask>>.Success(userTasks, "Tasks retrieved successfully");
         });
     }
+    
+    public async Task<Result<UserTask>> GetUserTaskAsync(int id)
+    {
+        return await ExecuteAsync(async () =>
+        {
+            var userTask = await _userTasks.FindAsync(id);
+
+            return Result<UserTask>.Success(userTask, "Task retrieved successfully");
+        });
+    }
 
     public async Task<Result<UserTask>> AddTaskAsync(UserTask newTask)
     {

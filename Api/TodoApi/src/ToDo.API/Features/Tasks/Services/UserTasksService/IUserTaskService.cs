@@ -7,6 +7,8 @@ namespace ToDo.API.Features.Tasks.Services.UserTasksService;
 public interface IUserTaskService
 {
     public Task<Result<List<UserTask>>> GetUserTasksAsync(int userId);
+
+    public Task<Result<UserTask>> GetUserTaskAsync(int id);
     
     public Task<Result<UserTask>> AddTaskAsync(UserTask newTask);
     

@@ -18,6 +18,7 @@ public static class EndpointsProvider
         endpointsBuilder.Register<DeleteUserEndpoint>();
 
         endpointsBuilder.Register<GetUserTasksEndpoint>();
+        endpointsBuilder.Register<GetUserTaskEndpoint>();
         endpointsBuilder.Register<AddTaskEndpoint>();
         endpointsBuilder.Register<UpdateTaskEndpoint>();
         endpointsBuilder.Register<DeleteTaskEndpoint>();
