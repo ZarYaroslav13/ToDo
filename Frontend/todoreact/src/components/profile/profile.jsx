@@ -4,30 +4,32 @@ import Alert from '@mui/material/Alert';
 import { useProfileViewModel } from "./profileViewModel";
 import { TasksTable } from "../tasktable/taskTable";
 import { useState, useEffect } from "react";
+import { EditTaskDialog } from "../editTaskDialog/editTaskDialog";
 
 export const Profile = () => {
-    const {
-        userInfo,
-        snackbarOpen,
-        snackbarMessage,
-        snackbarSeverity,
-        closeSnackbar,
-        deleteTask,
-    } = useProfileViewModel();
+    const { userInfo, snackbarOpen, snackbarMessage, snackbarSeverity, closeSnackbar, updateTask, deleteTask } = useProfileViewModel();
 
-    // Local state for tasks to allow immediate UI updates
     const [tasks, setTasks] = useState(userInfo?.tasks ?? []);
+    const [editingTask, setEditingTask] = useState(null);
 
     useEffect(() => {
         setTasks(userInfo?.tasks ?? []);
     }, [userInfo?.tasks]);
 
-    // Handle delete
-    const handleDeleteTask = async (id) => {
-        const result = await deleteTask(id);
+    const handleEditTask = (task) => setEditingTask(task);
 
-        if (result.succeeded) {
-            setTasks(prev => prev.filter(task => task.id !== id));
+    const handleSaveTask = async (task) => {
+        const updatedTask = await updateTask(task);
+        if (updatedTask) {
+            setTasks(prev => prev.map(t => t.id === updatedTask.id ? updatedTask : t));
+            setEditingTask(null);
+        }
+    };
+
+    const handleDeleteTask = async (id) => {
+        const success = await deleteTask(id);
+        if (success) {
+            setTasks(prev => prev.filter(t => t.id !== id));
         }
     };
 
@@ -49,9 +51,18 @@ export const Profile = () => {
                     <TasksTable
                         tasks={tasks}
                         onDelete={handleDeleteTask}
-                        onEdit={(task) => console.log("edit", task)}
+                        onEdit={handleEditTask}
                         onAdd={() => console.log("add new task")}
                     />
+
+                    {editingTask && (
+                        <EditTaskDialog
+                            open={!!editingTask}
+                            task={editingTask}
+                            onClose={() => setEditingTask(null)}
+                            onSave={handleSaveTask}
+                        />
+                    )}
                 </section>
             </form>
 

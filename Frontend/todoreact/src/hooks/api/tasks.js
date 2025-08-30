@@ -53,7 +53,7 @@ export function useTasksDomain() {
         }
     }
 
-    async function handleUpdate(taskId, updatedData) {
+    async function handleUpdate(updatedData) {
         setIsLoading(true);
         setErrorMessage(null);
         try {
@@ -62,14 +62,14 @@ export function useTasksDomain() {
                 priority: PriorityFunctions.toValue(updatedData.priority),
             };
 
-            const response = await api.tasks.update(taskId, payload);
+            const response = await api.tasks.update(updatedData.id, payload);
 
             const updated = {
                 ...response.data,
                 priority: PriorityFunctions.fromValue(response.data.priority),
             };
 
-            setTasks(prev => prev.map(t => t.id === taskId ? updated : t));
+            setTasks(prev => prev.map(t => t.id === updatedData.Id ? updated : t));
             return updated;
         } catch (error) {
             setErrorMessage("Failed to update task. Please try again later.");

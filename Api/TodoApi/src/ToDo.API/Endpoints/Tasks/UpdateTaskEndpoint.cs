@@ -6,7 +6,7 @@ namespace ToDo.API.Endpoints.Tasks;
 
 public class UpdateTaskEndpoint : BaseEndpoint<UpdateTaskCommand>
 {
-    public override string EndpointUrl { get; } = "/tasks";
+    public override string EndpointUrl { get; } = "/tasks/{id}";
     public override EndpointHttpMethod EndpointHttpMethod { get; }  = EndpointHttpMethod.Put;
-
+    
 }

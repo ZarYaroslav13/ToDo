@@ -5,7 +5,7 @@ import { useAuth } from "../authprovider/authprovider";
 
 export function useProfileViewModel() {
     const users = useUserDomain();
-    const tasks = useTasksDomain();
+    const tasksApi = useTasksDomain();
     const auth = useAuth();
 
     const [userInfo, setUserInfo] = useState(null);
@@ -19,39 +19,53 @@ export function useProfileViewModel() {
         const fetchUser = async () => {
             try {
                 const data = await users.fetch(auth.user.Id);
-                setUserInfo(data);
-                setSnackbarMessage(`Welcome, ${data.name}`);
-                setSnackbarSeverity("success");
-                setSnackbarOpen(true);
+                const userTasks = await tasksApi.fetch(auth.user.Id);
+                setUserInfo({ ...data, tasks: userTasks });
+                showSnackbar(`Welcome, ${data.name}`, "success");
             } catch (err) {
-                console.error("Failed to fetch user info:", err);
-                setSnackbarMessage("Failed to fetch user info");
-                setSnackbarSeverity("error");
-                setSnackbarOpen(true);
+                console.error(err);
+                showSnackbar("Failed to fetch user info", "error");
             }
         };
 
-        const fetchUserTasks = async () => {
-            try {
-                const data = await tasks.fetch(auth.user.Id);
-                setUserInfo((prev) => ({ ...prev, tasks: data }));
-            } catch (err) {
-                console.error("Failed to fetch user tasks info:", err);
-                setSnackbarMessage("Failed to fetch user info");
-                setSnackbarSeverity("error");
-                setSnackbarOpen(true);
-            }
-        };
-
-        fetchUser().then(fetchUserTasks);
-
+        fetchUser();
     }, [auth.user]);
+
+    const showSnackbar = (message, severity = "success") => {
+        setSnackbarMessage(message);
+        setSnackbarSeverity(severity);
+        setSnackbarOpen(true);
+    };
 
     const closeSnackbar = () => setSnackbarOpen(false);
 
-    const updateTask = async (taskId, updatedTask) => await tasks.update(taskId, updatedTask);
+    const updateTask = async (updatedTask) => {
+        try {
+            const result = await tasksApi.update(updatedTask);
+            if (result) {
+                showSnackbar("Task updated successfully", "success");
+                return result;
+            }
+        } catch (err) {
+            console.error(err);
+            showSnackbar("Failed to update task", "error");
+        }
+        return null;
+    };
 
-    const deleteTask = async (taskId) => await tasks.delete(taskId);
+    const deleteTask = async (taskId) => {
+        try {
+            const result = await tasksApi.delete(taskId);
+            if (result?.succeeded) {
+                showSnackbar("Task deleted successfully", "success");
+                return true;
+            }
+        } catch (err) {
+            console.error(err);
+            showSnackbar("Failed to delete task", "error");
+        }
+        return false;
+    };
 
     return {
         userInfo,
@@ -61,5 +75,6 @@ export function useProfileViewModel() {
         closeSnackbar,
         updateTask,
         deleteTask,
+        showSnackbar
     };
 }
