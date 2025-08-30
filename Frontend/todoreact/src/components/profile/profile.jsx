@@ -2,7 +2,7 @@ import styles from "./profile.module.css";
 import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
 import { useProfileViewModel } from "./profileViewModel";
-import TasksTable from "../tasktable/tasktable"
+import {TasksTable} from "../tasktable/tasktable"
 
 export const Profile = () => {
     const {

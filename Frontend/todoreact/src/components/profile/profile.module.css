@@ -17,9 +17,9 @@
     flex-direction: column;
     align-self: center;
     align-items: center;
-    max-width: 70%;
+    max-width: 90%;
     margin: 5% auto;
-    padding: 16px;
+    padding: 1%;
 
     background-color: antiquewhite;
     border: 1px solid #ccc;

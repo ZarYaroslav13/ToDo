@@ -1,42 +1,23 @@
 import { useState } from "react";
 import { api } from "../../api";
+import { Priority, PriorityFunctions } from "../../enums/priority"; // adjust path if needed
 
 export function useTasksDomain() {
     const [tasks, setTasks] = useState([]);
     const [errorMessage, setErrorMessage] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
 
-    // ---- API MAPPERS ----
-    function convertPriorityFromApi(priority) {
-        switch (priority) {
-            case 0: return "none";
-            case 1: return "low";
-            case 2: return "medium";
-            case 3: return "high";
-            default: return "none";
-        }
-    }
-
-    function convertPriorityToApi(priority) {
-        switch (priority) {
-            case "low": return 1;
-            case "medium": return 2;
-            case "high": return 3;
-            default: return 0;
-        }
-    }
-
-    function mapTaskFromApi(task) {
-        return { ...task, priority: convertPriorityFromApi(task.priority) };
-    }
-
-    // ---- CRUD ----
     async function fetchUserTasks(userId) {
         setIsLoading(true);
         setErrorMessage(null);
         try {
             const response = await api.tasks.getUserTasks(userId);
-            const mapped = response.data.map(mapTaskFromApi);
+
+            const mapped = response.data.map(task => ({
+                ...task,
+                priority: PriorityFunctions.fromValue(task.priority),
+            }));
+
             setTasks(mapped);
             return mapped;
         } catch (error) {
@@ -50,11 +31,21 @@ export function useTasksDomain() {
         setIsLoading(true);
         setErrorMessage(null);
         try {
-            const payload = { ...createData, priority: convertPriorityToApi(createData.priority) };
+            // convert priority to numeric before API call
+            const payload = {
+                ...createData,
+                priority: PriorityFunctions.toValue(createData.priority),
+            };
+
             const response = await api.tasks.create(payload);
-            const newTask = mapTaskFromApi(response.data);
-            setTasks(prev => [...prev, newTask]);
-            return newTask;
+
+            const created = {
+                ...response.data,
+                priority: PriorityFunctions.fromValue(response.data.priority),
+            };
+
+            setTasks(prev => [...prev, created]);
+            return created;
         } catch (error) {
             setErrorMessage("Failed to create task. Please try again later.");
         } finally {
@@ -66,11 +57,20 @@ export function useTasksDomain() {
         setIsLoading(true);
         setErrorMessage(null);
         try {
-            const payload = { ...updatedData, priority: convertPriorityToApi(updatedData.priority) };
+            const payload = {
+                ...updatedData,
+                priority: PriorityFunctions.toValue(updatedData.priority),
+            };
+
             const response = await api.tasks.update(taskId, payload);
-            const updatedTask = mapTaskFromApi(response.data);
-            setTasks(prev => prev.map(t => t.id === taskId ? updatedTask : t));
-            return updatedTask;
+
+            const updated = {
+                ...response.data,
+                priority: PriorityFunctions.fromValue(response.data.priority),
+            };
+
+            setTasks(prev => prev.map(t => t.id === taskId ? updated : t));
+            return updated;
         } catch (error) {
             setErrorMessage("Failed to update task. Please try again later.");
         } finally {
