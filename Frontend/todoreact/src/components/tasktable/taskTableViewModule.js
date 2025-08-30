@@ -21,7 +21,7 @@ function getComparator(order, orderBy) {
         : (a, b) => -descendingComparator(a, b, orderBy);
 }
 
-export function useTasksViewModel(tasks) {
+export function useTasksViewModel(tasks, onAddCallback) {
     const [order, setOrder] = useState("asc");
     const [orderBy, setOrderBy] = useState("title");
     const [page, setPage] = useState(0);
@@ -47,7 +47,6 @@ export function useTasksViewModel(tasks) {
     };
 
     const handleChangePage = (_, newPage) => setPage(newPage);
-
     const handleChangeRowsPerPage = (event) => {
         setRowsPerPage(parseInt(event.target.value, 10));
         setPage(0);
@@ -94,6 +93,6 @@ export function useTasksViewModel(tasks) {
         filteredTasks,
         visibleRows,
         PriorityFilterVariants,
+        onAdd: onAddCallback // <- now Add button triggers the callback from Profile
     };
 }
-
