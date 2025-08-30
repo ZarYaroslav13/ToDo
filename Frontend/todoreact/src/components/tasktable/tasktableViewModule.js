@@ -1,9 +1,17 @@
 import { useState, useMemo } from "react";
-import { Priority } from "../../enums/priority";
+import { Priority, PriorityFunctions } from "../../enums/priority";
 
 function descendingComparator(a, b, orderBy) {
-    if (b[orderBy] < a[orderBy]) return -1;
-    if (b[orderBy] > a[orderBy]) return 1;
+    let aValue = a[orderBy];
+    let bValue = b[orderBy];
+
+    if (orderBy === "priority") {
+        aValue = PriorityFunctions.toValue(aValue);
+        bValue = PriorityFunctions.toValue(bValue);
+    }
+
+    if (bValue < aValue) return -1;
+    if (bValue > aValue) return 1;
     return 0;
 }
 
@@ -20,6 +28,8 @@ export function useTasksViewModel(tasks) {
     const [rowsPerPage, setRowsPerPage] = useState(5);
     const [filter, setFilter] = useState("");
     const [priorityFilter, setPriorityFilter] = useState([]);
+    const [startDate, setStartDate] = useState("");
+    const [endDate, setEndDate] = useState("");
 
     const PriorityFilterVariants = {
         All: "All",
@@ -50,9 +60,14 @@ export function useTasksViewModel(tasks) {
                 priorityFilter.length === 0 ||
                 priorityFilter.includes("All") ||
                 priorityFilter.includes(t.priority.name);
-            return matchesTitle && matchesPriority;
+
+            let matchesDeadline = true;
+            if (startDate) matchesDeadline = new Date(t.deadline) >= new Date(startDate);
+            if (endDate) matchesDeadline = matchesDeadline && new Date(t.deadline) <= new Date(endDate);
+
+            return matchesTitle && matchesPriority && matchesDeadline;
         });
-    }, [tasks, filter, priorityFilter]);
+    }, [tasks, filter, priorityFilter, startDate, endDate]);
 
     const visibleRows = useMemo(() => {
         return [...filteredTasks]
@@ -69,11 +84,16 @@ export function useTasksViewModel(tasks) {
         setFilter,
         priorityFilter,
         setPriorityFilter,
+        startDate,
+        setStartDate,
+        endDate,
+        setEndDate,
         handleRequestSort,
         handleChangePage,
         handleChangeRowsPerPage,
         filteredTasks,
         visibleRows,
-        PriorityFilterVariants
+        PriorityFilterVariants,
     };
 }
+

@@ -36,7 +36,7 @@ export function TasksTable({ tasks }) {
 
     return (
         <Paper sx={{ width: "100%", overflow: "hidden" }}>
-            {/* Filters */}
+
             <div style={{ display: "flex", gap: "1rem", padding: "1rem" }}>
                 <TextField
                     label="Search by Title"
@@ -67,9 +67,26 @@ export function TasksTable({ tasks }) {
                         ))}
                     </Select>
                 </FormControl>
+
+                <TextField
+                    label="Start Date"
+                    type="date"
+                    size="small"
+                    value={vm.startDate}
+                    onChange={(e) => vm.setStartDate(e.target.value)}
+                    InputLabelProps={{ shrink: true }}
+                />
+                <TextField
+                    label="End Date"
+                    type="date"
+                    size="small"
+                    value={vm.endDate}
+                    onChange={(e) => vm.setEndDate(e.target.value)}
+                    InputLabelProps={{ shrink: true }}
+                />
             </div>
 
-            {/* Table */}
+
             <TableContainer>
                 <Table stickyHeader>
                     <TableHead>
@@ -115,7 +132,6 @@ export function TasksTable({ tasks }) {
                 </Table>
             </TableContainer>
 
-            {/* Pagination */}
             <TablePagination
                 rowsPerPageOptions={[5, 10, 25]}
                 component="div"
