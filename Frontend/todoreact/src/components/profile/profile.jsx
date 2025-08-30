@@ -2,6 +2,7 @@ import styles from "./profile.module.css";
 import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
 import { useProfileViewModel } from "./profileViewModel";
+import TasksTable from "../tasktable/tasktable"
 
 export const Profile = () => {
     const {
@@ -27,11 +28,22 @@ export const Profile = () => {
 
                 <section className={styles.TasksCard}>
                     <h2>Tasks</h2>
-                    <ul>
+                    <TasksTable
+                        tasks={userInfo.tasks ?? []}
+                        onDelete={(id) => console.log("delete", id)}
+                        onEdit={(task) => console.log("edit", task)}
+                        onAdd={() => console.log("add new task")}
+                    />
+                    {/*<ul>
                         {userInfo.tasks.map((task, index) => (
-                            <li key={task.id ?? index}>{task.title ?? task}</li>
+                            <li key={task.Id ?? index}>
+                                <p>{task.title ?? task}</p>
+                                <p>{task.priority}</p>
+                                <p>{task.deadline ?? task}</p>
+                                <p>{task.description ?? task}</p>
+                            </li>
                         ))}
-                    </ul>
+                    </ul>*/}
                 </section>
             </form>
 
