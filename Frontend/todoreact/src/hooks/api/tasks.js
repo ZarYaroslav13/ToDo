@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { api } from "../../api";
-import { Priority, PriorityFunctions } from "../../enums/priority"; // adjust path if needed
+import { PriorityFunctions } from "../../enums/priority"; // adjust path if needed
 
 export function useTasksDomain() {
     const [tasks, setTasks] = useState([]);
@@ -82,8 +82,9 @@ export function useTasksDomain() {
         setIsLoading(true);
         setErrorMessage(null);
         try {
-            await api.tasks.delete(taskId);
+            var result = await api.tasks.delete(taskId);
             setTasks(prev => prev.filter(t => t.id !== taskId));
+            return result;
         } catch (error) {
             setErrorMessage("Failed to delete task. Please try again later.");
         } finally {

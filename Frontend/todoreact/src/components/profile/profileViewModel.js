@@ -49,11 +49,17 @@ export function useProfileViewModel() {
 
     const closeSnackbar = () => setSnackbarOpen(false);
 
+    const updateTask = async (taskId, updatedTask) => await tasks.update(taskId, updatedTask);
+
+    const deleteTask = async (taskId) => await tasks.delete(taskId);
+
     return {
         userInfo,
         snackbarOpen,
         snackbarMessage,
         snackbarSeverity,
         closeSnackbar,
+        updateTask,
+        deleteTask,
     };
 }

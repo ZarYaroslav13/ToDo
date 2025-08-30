@@ -2,9 +2,10 @@ import React from "react";
 import {
     Table, TableBody, TableCell, TableContainer,
     TableHead, TableRow, TablePagination, TableSortLabel,
-    TextField, Paper, FormControl, InputLabel, Select, MenuItem, OutlinedInput, Box, Chip
+    TextField, Paper, FormControl, InputLabel, Select, MenuItem, OutlinedInput, Box, Chip, IconButton, Tooltip
 } from "@mui/material";
-import { useTasksViewModel } from "./tasktableViewModule";
+import { Edit, Delete } from "@mui/icons-material";
+import { useTasksViewModel } from "./taskTableViewModule";
 
 const columns = [
     { id: "title", label: "Title" },
@@ -24,19 +25,17 @@ const MenuProps = {
     },
 };
 
-export function TasksTable({ tasks }) {
+export function TasksTable({ tasks, onEdit, onDelete }) {
     const vm = useTasksViewModel(tasks);
 
     const handlePriorityChange = (event) => {
-        const {
-            target: { value },
-        } = event;
+        const { target: { value } } = event;
         vm.setPriorityFilter(typeof value === "string" ? value.split(",") : value);
     };
 
     return (
         <Paper sx={{ width: "100%", overflow: "hidden" }}>
-
+            {/* Filters */}
             <div style={{ display: "flex", gap: "1rem", padding: "1rem" }}>
                 <TextField
                     label="Search by Title"
@@ -67,7 +66,6 @@ export function TasksTable({ tasks }) {
                         ))}
                     </Select>
                 </FormControl>
-
                 <TextField
                     label="Start Date"
                     type="date"
@@ -86,7 +84,7 @@ export function TasksTable({ tasks }) {
                 />
             </div>
 
-
+            {/* Table */}
             <TableContainer>
                 <Table stickyHeader>
                     <TableHead>
@@ -105,12 +103,13 @@ export function TasksTable({ tasks }) {
                                     </TableSortLabel>
                                 </TableCell>
                             ))}
+                            <TableCell>Actions</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
                         {vm.visibleRows.length === 0 ? (
                             <TableRow>
-                                <TableCell colSpan={columns.length} align="center">
+                                <TableCell colSpan={columns.length + 1} align="center">
                                     No tasks found
                                 </TableCell>
                             </TableRow>
@@ -120,11 +119,21 @@ export function TasksTable({ tasks }) {
                                     <TableCell>{task.title}</TableCell>
                                     <TableCell>{task.priority.name}</TableCell>
                                     <TableCell>
-                                        {task.deadline
-                                            ? new Date(task.deadline).toLocaleDateString()
-                                            : "—"}
+                                        {task.deadline ? new Date(task.deadline).toLocaleDateString() : "—"}
                                     </TableCell>
                                     <TableCell>{task.description}</TableCell>
+                                    <TableCell>
+                                        <Tooltip title="Edit">
+                                            <IconButton onClick={() => onEdit(task)}>
+                                                <Edit />
+                                            </IconButton>
+                                        </Tooltip>
+                                        <Tooltip title="Delete">
+                                            <IconButton onClick={() => onDelete(task.id)}>
+                                                <Delete />
+                                            </IconButton>
+                                        </Tooltip>
+                                    </TableCell>
                                 </TableRow>
                             ))
                         )}
@@ -132,6 +141,7 @@ export function TasksTable({ tasks }) {
                 </Table>
             </TableContainer>
 
+            {/* Pagination */}
             <TablePagination
                 rowsPerPageOptions={[5, 10, 25]}
                 component="div"
