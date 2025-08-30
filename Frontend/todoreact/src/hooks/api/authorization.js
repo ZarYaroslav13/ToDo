@@ -16,7 +16,6 @@ export function useAuthorization() {
 
             const decoded = jwtDecode(result.data.data);
 
-
             return decoded;
         } catch (err) {
             setError(err.response?.data?.message || "Login failed");
