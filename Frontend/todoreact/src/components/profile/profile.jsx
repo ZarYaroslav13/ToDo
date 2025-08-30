@@ -5,32 +5,43 @@ import { useProfileViewModel } from "./profileViewModel";
 import { TasksTable } from "../tasktable/taskTable";
 import { useState, useEffect } from "react";
 import { EditTaskDialog } from "../editTaskDialog/editTaskDialog";
+import { AddTaskDialog } from "../addTaskDialog/addTaskDialog";
 
 export const Profile = () => {
-    const { userInfo, snackbarOpen, snackbarMessage, snackbarSeverity, closeSnackbar, updateTask, deleteTask } = useProfileViewModel();
+    const {
+        userInfo,
+        snackbarOpen,
+        snackbarMessage,
+        snackbarSeverity,
+        closeSnackbar,
+        updateTask,
+        deleteTask,
+        addTask
+    } = useProfileViewModel();
 
     const [tasks, setTasks] = useState(userInfo?.tasks ?? []);
     const [editingTask, setEditingTask] = useState(null);
+    const [addingTask, setAddingTask] = useState(false);
 
     useEffect(() => {
         setTasks(userInfo?.tasks ?? []);
     }, [userInfo?.tasks]);
 
     const handleEditTask = (task) => setEditingTask(task);
+    const handleAddTask = () => setAddingTask(true);
 
     const handleSaveTask = async (task) => {
-        const updatedTask = await updateTask(task);
-        if (updatedTask) {
-            setTasks(prev => prev.map(t => t.id === updatedTask.id ? updatedTask : t));
-            setEditingTask(null);
-        }
+        const updated = await updateTask(task);
+        if (updated) setEditingTask(null);
+    };
+
+    const handleAddNewTask = async (task) => {
+        const created = await addTask(task);
+        if (created) setAddingTask(false);
     };
 
     const handleDeleteTask = async (id) => {
-        const success = await deleteTask(id);
-        if (success) {
-            setTasks(prev => prev.filter(t => t.id !== id));
-        }
+        await deleteTask(id);
     };
 
     if (!userInfo) return <p>Loading...</p>;
@@ -52,7 +63,7 @@ export const Profile = () => {
                         tasks={tasks}
                         onDelete={handleDeleteTask}
                         onEdit={handleEditTask}
-                        onAdd={() => console.log("add new task")}
+                        onAdd={handleAddTask}
                     />
 
                     {editingTask && (
@@ -61,6 +72,14 @@ export const Profile = () => {
                             task={editingTask}
                             onClose={() => setEditingTask(null)}
                             onSave={handleSaveTask}
+                        />
+                    )}
+
+                    {addingTask && (
+                        <AddTaskDialog
+                            open={addingTask}
+                            onClose={() => setAddingTask(false)}
+                            onSave={handleAddNewTask}
                         />
                     )}
                 </section>

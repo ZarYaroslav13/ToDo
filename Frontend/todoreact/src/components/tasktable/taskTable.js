@@ -2,7 +2,7 @@ import React from "react";
 import {
     Table, TableBody, TableCell, TableContainer,
     TableHead, TableRow, TablePagination, TableSortLabel,
-    TextField, Paper, FormControl, InputLabel, Select, MenuItem, OutlinedInput, Box, Chip, IconButton, Tooltip
+    TextField, Paper, FormControl, InputLabel, Button, Select, MenuItem, OutlinedInput, Box, Chip, IconButton, Tooltip
 } from "@mui/material";
 import { Edit, Delete } from "@mui/icons-material";
 import { useTasksViewModel } from "./taskTableViewModule";
@@ -25,8 +25,8 @@ const MenuProps = {
     },
 };
 
-export function TasksTable({ tasks, onEdit, onDelete }) {
-    const vm = useTasksViewModel(tasks);
+export function TasksTable({ tasks, onEdit, onDelete, onAdd }) {
+    const vm = useTasksViewModel(tasks, onAdd);
 
     const handlePriorityChange = (event) => {
         const { target: { value } } = event;
@@ -35,8 +35,8 @@ export function TasksTable({ tasks, onEdit, onDelete }) {
 
     return (
         <Paper sx={{ width: "100%", overflow: "hidden" }}>
-            {/* Filters */}
-            <div style={{ display: "flex", gap: "1rem", padding: "1rem" }}>
+            {/* Filters + Add Button */}
+            <div style={{ display: "flex", gap: "1rem", padding: "1rem", alignItems: "center" }}>
                 <TextField
                     label="Search by Title"
                     value={vm.filter}
@@ -82,6 +82,13 @@ export function TasksTable({ tasks, onEdit, onDelete }) {
                     onChange={(e) => vm.setEndDate(e.target.value)}
                     InputLabelProps={{ shrink: true }}
                 />
+
+                {/* Add Task Button */}
+                {vm.onAdd && (
+                    <Button sx={{ marginLeft: "auto" }} variant="contained" color="primary" onClick={vm.onAdd}>
+                        Add Task
+                    </Button>
+                )}
             </div>
 
             {/* Table */}
@@ -118,9 +125,7 @@ export function TasksTable({ tasks, onEdit, onDelete }) {
                                 <TableRow hover key={task.id}>
                                     <TableCell>{task.title}</TableCell>
                                     <TableCell>{task.priority.name}</TableCell>
-                                    <TableCell>
-                                        {task.deadline ? new Date(task.deadline).toLocaleDateString() : "—"}
-                                    </TableCell>
+                                    <TableCell>{task.deadline ? new Date(task.deadline).toLocaleDateString() : "—"}</TableCell>
                                     <TableCell>{task.description}</TableCell>
                                     <TableCell>
                                         <Tooltip title="Edit">
@@ -141,7 +146,6 @@ export function TasksTable({ tasks, onEdit, onDelete }) {
                 </Table>
             </TableContainer>
 
-            {/* Pagination */}
             <TablePagination
                 rowsPerPageOptions={[5, 10, 25]}
                 component="div"

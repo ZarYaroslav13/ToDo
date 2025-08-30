@@ -72,7 +72,7 @@ export const api = {
         },
 
         create(data){
-            return http.post(`tasks/task`, data);
+            return http.post(`tasks`, data);
         },
 
         update(id, data) {

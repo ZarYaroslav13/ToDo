@@ -44,6 +44,10 @@ export function useProfileViewModel() {
             const result = await tasksApi.update(updatedTask);
             if (result) {
                 showSnackbar("Task updated successfully", "success");
+                setUserInfo(prev => ({
+                    ...prev,
+                    tasks: prev.tasks.map(t => t.id === result.id ? result : t)
+                }));
                 return result;
             }
         } catch (err) {
@@ -58,6 +62,10 @@ export function useProfileViewModel() {
             const result = await tasksApi.delete(taskId);
             if (result?.succeeded) {
                 showSnackbar("Task deleted successfully", "success");
+                setUserInfo(prev => ({
+                    ...prev,
+                    tasks: prev.tasks.filter(t => t.id !== taskId)
+                }));
                 return true;
             }
         } catch (err) {
@@ -65,6 +73,25 @@ export function useProfileViewModel() {
             showSnackbar("Failed to delete task", "error");
         }
         return false;
+    };
+
+    const addTask = async (newTask) => {
+        try {
+            const taskToAdd = { ...newTask, userId: auth.user.Id  };
+            const createdTask = await tasksApi.create(taskToAdd);
+            if (createdTask) {
+                showSnackbar("Task added successfully", "success");
+                setUserInfo(prev => ({
+                    ...prev,
+                    tasks: [...(prev?.tasks ?? []), createdTask]
+                }));
+                return createdTask;
+            }
+        } catch (err) {
+            console.error(err);
+            showSnackbar("Failed to add task", "error");
+        }
+        return null;
     };
 
     return {
@@ -75,6 +102,7 @@ export function useProfileViewModel() {
         closeSnackbar,
         updateTask,
         deleteTask,
+        addTask,
         showSnackbar
     };
 }
