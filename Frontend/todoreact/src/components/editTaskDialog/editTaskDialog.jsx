@@ -58,6 +58,7 @@ export function EditTaskDialog({ open, task, onClose, onSave }) {
             <DialogTitle>Edit Task</DialogTitle>
             <DialogContent sx={{ display: "flex", flexDirection: "column", gap: 2, mt: 1 }}>
                 <TextField
+                    margin="normal"
                     label="Title"
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
@@ -69,13 +70,20 @@ export function EditTaskDialog({ open, task, onClose, onSave }) {
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
                 />
-                <FormControl error={!!errors.priority}>
-                    <InputLabel>Priority</InputLabel>
-                    <Select value={priority} onChange={(e) => setPriority(e.target.value)}>
+                <FormControl error={!!errors.priority} margin="normal">
+                    <InputLabel id="demo-simple-select-autowidth-label">Priority</InputLabel>
+                    <Select
+                        labelId="demo-simple-select-autowidth-label"
+                        id="demo-simple-select-autowidth"
+                        value={priority}
+                        autoWidth
+                        label="Priorirt"
+                        onChange={(e) => setPriority(e.target.value)}>
                         {Object.values(Priority).map(p => (
                             <MenuItem key={p.name} value={p.name}>{p.name}</MenuItem>
                         ))}
                     </Select>
+
                     <FormHelperText>{errors.priority}</FormHelperText>
                 </FormControl>
                 <TextField

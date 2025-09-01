@@ -6,65 +6,57 @@ import { TasksTable } from "../tasktable/taskTable";
 import { useState, useEffect } from "react";
 import { EditTaskDialog } from "../editTaskDialog/editTaskDialog";
 import { AddTaskDialog } from "../addTaskDialog/addTaskDialog";
+import { UserInfo } from "../userInfo/userInfo";
 
 export const Profile = () => {
-    const {
-        userInfo,
-        snackbarOpen,
-        snackbarMessage,
-        snackbarSeverity,
-        closeSnackbar,
-        updateTask,
-        deleteTask,
-        addTask
-    } = useProfileViewModel();
+    const viewModel = useProfileViewModel();
 
-    const [tasks, setTasks] = useState(userInfo?.tasks ?? []);
+    const [tasks, setTasks] = useState(viewModel.userInfo?.tasks ?? []);
     const [editingTask, setEditingTask] = useState(null);
     const [addingTask, setAddingTask] = useState(false);
 
     useEffect(() => {
-        setTasks(userInfo?.tasks ?? []);
-    }, [userInfo?.tasks]);
+        setTasks(viewModel.userInfo?.tasks ?? []);
+    }, [viewModel.userInfo?.tasks]);
 
     const handleEditTask = (task) => setEditingTask(task);
     const handleAddTask = () => setAddingTask(true);
 
     const handleSaveTask = async (task) => {
-        const updated = await updateTask(task);
+        const updated = await viewModel.updateTask(task);
         if (updated) setEditingTask(null);
     };
 
     const handleAddNewTask = async (task) => {
-        const created = await addTask(task);
+        const created = await viewModel.addTask(task);
         if (created) setAddingTask(false);
     };
 
-    const handleDeleteTask = async (id) => {
-        await deleteTask(id);
-    };
-
-    if (!userInfo) return <p>Loading...</p>;
+    if (!viewModel.userInfo) return <p>Loading...</p>;
 
     return (
         <>
             <form className={styles.ProfileForm}>
                 <h1>User Profile</h1>
 
-                <section className={styles.UserInfoCard}>
-                    <h2>User Info</h2>
-                    <p>Name: {userInfo.name} {userInfo.surname}</p>
-                    <p>Email: {userInfo.email}</p>
-                </section>
+                <UserInfo userInfo={viewModel.userInfo} />
 
                 <section className={styles.TasksCard}>
                     <h2>Tasks</h2>
                     <TasksTable
                         tasks={tasks}
-                        onDelete={handleDeleteTask}
-                        onEdit={handleEditTask}
                         onAdd={handleAddTask}
+                        onEdit={handleEditTask}
+                        onDelete={viewModel.deleteTask}
                     />
+
+                    {addingTask && (
+                        <AddTaskDialog
+                            open={addingTask}
+                            onClose={() => setAddingTask(false)}
+                            onSave={handleAddNewTask}
+                        />
+                    )}
 
                     {editingTask && (
                         <EditTaskDialog
@@ -74,30 +66,22 @@ export const Profile = () => {
                             onSave={handleSaveTask}
                         />
                     )}
-
-                    {addingTask && (
-                        <AddTaskDialog
-                            open={addingTask}
-                            onClose={() => setAddingTask(false)}
-                            onSave={handleAddNewTask}
-                        />
-                    )}
                 </section>
             </form>
 
             <Snackbar
-                open={snackbarOpen}
+                open={viewModel.snackbarOpen}
                 autoHideDuration={3000}
-                onClose={closeSnackbar}
+                onClose={viewModel.closeSnackbar}
                 anchorOrigin={{ vertical: "top", horizontal: "center" }}
             >
                 <Alert
-                    onClose={closeSnackbar}
-                    severity={snackbarSeverity}
+                    onClose={viewModel.closeSnackbar}
+                    severity={viewModel.snackbarSeverity}
                     variant="filled"
                     sx={{ width: '100%' }}
                 >
-                    {snackbarMessage}
+                    {viewModel.snackbarMessage}
                 </Alert>
             </Snackbar>
         </>

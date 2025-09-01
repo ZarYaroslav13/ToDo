@@ -35,7 +35,7 @@ export function TasksTable({ tasks, onEdit, onDelete, onAdd }) {
 
     return (
         <Paper sx={{ width: "100%", overflow: "hidden" }}>
-            {/* Filters + Add Button */}
+
             <div style={{ display: "flex", gap: "1rem", padding: "1rem", alignItems: "center" }}>
                 <TextField
                     label="Search by Title"
@@ -91,7 +91,6 @@ export function TasksTable({ tasks, onEdit, onDelete, onAdd }) {
                 )}
             </div>
 
-            {/* Table */}
             <TableContainer>
                 <Table stickyHeader>
                     <TableHead>

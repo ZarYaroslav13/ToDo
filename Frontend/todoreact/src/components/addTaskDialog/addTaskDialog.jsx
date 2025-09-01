@@ -42,7 +42,6 @@ export function AddTaskDialog({ open, onClose, onSave, userId }) {
             userId
         });
 
-        // Reset fields after saving
         setTitle("");
         setDescription("");
         setPriority("None");
@@ -53,26 +52,34 @@ export function AddTaskDialog({ open, onClose, onSave, userId }) {
     return (
         <Dialog open={open} onClose={onClose}>
             <DialogTitle>Add New Task</DialogTitle>
-            <DialogContent sx={{ display: "flex", flexDirection: "column", gap: 2, mt: 1 }}>
+            <DialogContent sx={{ display: "flex", flexDirection: "column", gap: 3, mt: 1 }}>
                 <TextField
                     label="Title"
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
                     error={!!errors.title}
                     helperText={errors.title}
+                    margin="normal"
                 />
                 <TextField
                     label="Description"
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
                 />
-                <FormControl error={!!errors.priority}>
-                    <InputLabel>Priority</InputLabel>
-                    <Select value={priority} onChange={(e) => setPriority(e.target.value)}>
+                <FormControl error={!!errors.priority} margin="normal">
+                    <InputLabel id="demo-simple-select-autowidth-label">Priority</InputLabel>
+                    <Select
+                        labelId="demo-simple-select-autowidth-label"
+                        id="demo-simple-select-autowidth"
+                        value={priority}
+                        autoWidth
+                        label="Priorirt"
+                        onChange={(e) => setPriority(e.target.value)}>
                         {Object.values(Priority).map(p => (
                             <MenuItem key={p.name} value={p.name}>{p.name}</MenuItem>
                         ))}
                     </Select>
+
                     <FormHelperText>{errors.priority}</FormHelperText>
                 </FormControl>
                 <TextField
