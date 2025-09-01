@@ -3,6 +3,7 @@ import { useUserDomain } from "../../hooks/api/users";
 import { useTasksDomain } from "../../hooks/api/tasks";
 import { useAuth } from "../authprovider/authprovider";
 
+
 export function useProfileViewModel() {
     const users = useUserDomain();
     const tasksApi = useTasksDomain();
@@ -38,6 +39,58 @@ export function useProfileViewModel() {
     };
 
     const closeSnackbar = () => setSnackbarOpen(false);
+
+    const handleUpdatingUser = async (updatedUser) => {
+        try {
+            let result = await users.update(updatedUser);
+
+            if (result.succeeded) {
+                setUserInfo({...result.data, tasks: userInfo.tasks});
+                showSnackbar("Updated successfully user info", "success");
+                return result.data;
+            }
+        } catch (err) {
+            console.error(err);
+            showSnackbar("Failed to update user info", "error");
+        }
+        return null;
+    };
+
+    const handleUpdatingPassword = async (updatingForm) => {
+        try {
+            let result = await users.updatePassword(updatingForm);
+
+            if (result) {
+                showSnackbar("Updated successfully user info", "success");
+                return result.data;
+            }
+        } catch (err) {
+            console.error(err);
+            showSnackbar("Failed to update password", "error");
+        }
+
+        showSnackbar("Failed to update password", "error");
+        return null;
+    };
+
+    const addTask = async (newTask) => {
+        try {
+            const taskToAdd = { ...newTask, userId: auth.user.Id  };
+            const createdTask = await tasksApi.create(taskToAdd);
+            if (createdTask) {
+                showSnackbar("Task added successfully", "success");
+                setUserInfo(prev => ({
+                    ...prev,
+                    tasks: [...(prev?.tasks ?? []), createdTask]
+                }));
+                return createdTask;
+            }
+        } catch (err) {
+            console.error(err);
+            showSnackbar("Failed to add task", "error");
+        }
+        return null;
+    };
 
     const updateTask = async (updatedTask) => {
         try {
@@ -75,31 +128,14 @@ export function useProfileViewModel() {
         return false;
     };
 
-    const addTask = async (newTask) => {
-        try {
-            const taskToAdd = { ...newTask, userId: auth.user.Id  };
-            const createdTask = await tasksApi.create(taskToAdd);
-            if (createdTask) {
-                showSnackbar("Task added successfully", "success");
-                setUserInfo(prev => ({
-                    ...prev,
-                    tasks: [...(prev?.tasks ?? []), createdTask]
-                }));
-                return createdTask;
-            }
-        } catch (err) {
-            console.error(err);
-            showSnackbar("Failed to add task", "error");
-        }
-        return null;
-    };
-
     return {
         userInfo,
         snackbarOpen,
         snackbarMessage,
         snackbarSeverity,
         closeSnackbar,
+        handleUpdatingUser,
+        handleUpdatingPassword,
         updateTask,
         deleteTask,
         addTask,

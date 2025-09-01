@@ -93,7 +93,7 @@ public class UserService : BaseService, IUserService
 
             await _context.SaveChangesAsync();
             
-            return Result<User>.Success(user,"User updated successfully");
+            return Result<User>.Success(new() { Id = user.Id, Name = user.Name, Surname = user.Surname, Email = user.Email},"User updated successfully");
         });
     }
 

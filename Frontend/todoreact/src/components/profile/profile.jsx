@@ -39,7 +39,11 @@ export const Profile = () => {
             <form className={styles.ProfileForm}>
                 <h1>User Profile</h1>
 
-                <UserInfo userInfo={viewModel.userInfo} />
+                <UserInfo
+                    userInfo={viewModel.userInfo}
+                    onUpdatingUser={viewModel.handleUpdatingUser}
+                    onUpdatingPassword={viewModel.handleUpdatingPassword}
+                />
 
                 <section className={styles.TasksCard}>
                     <h2>Tasks</h2>

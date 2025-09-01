@@ -43,12 +43,12 @@ export const api = {
             return http.get(`users/${id}`);
         },
 
-        update(id, data){
-            return http.put(`users/${id}`, data);
+        update(data){
+            return http.put(`users`, data);
         },
 
-        updatePassword(data){
-            return http.put("users/update-user-password", data);
+        async updatePassword(data){
+            return await http.patch("users/update-user-password", data);;
         },
 
         async delete(id){

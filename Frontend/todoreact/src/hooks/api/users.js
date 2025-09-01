@@ -6,11 +6,16 @@ export function useUserDomain(){
     const [errorMessage, setErrorMessage] = useState();
     const [isLoading, setIsLoading] = useState(false);
 
+    useEffect(() => {
+        localStorage.setItem("user", {user});
+    }, [user]);
+
     async function fetchUserInfo(id) {
         setIsLoading(true);
         try {
             const data = await api.users.getInfo(id);
             setUser(data);
+
             return data.data;
         } catch (error) {
             setErrorMessage("Failed to get user info. Please try again later.");
@@ -19,11 +24,15 @@ export function useUserDomain(){
         }
     }
 
-    async function handleUpdate(id, updatedUser) {
+    async function handleUpdate(updatedUser) {
         setIsLoading(true);
         try {
-            await api.users.update(id, updatedUser);
-            await fetchUserInfo();
+            let result = await api.users.update(updatedUser);
+
+            if(result.succeeded){
+                setUser(result.data);
+            }
+            return result;
         } catch (error) {
             setErrorMessage("Failed to update user. Please try again later.");
         } finally {
@@ -31,11 +40,11 @@ export function useUserDomain(){
         }
     }
 
-    async function handleUpdatePassword(id, updatedPassword) {
+    async function handleUpdatePassword(updatedPassword) {
         setIsLoading(true);
         try {
-            await api.users.updatePassword(updatedPassword);
-            await fetchUserInfo();
+            let result = await api.users.updatePassword(updatedPassword);
+            return result.succeeded;
         } catch (error) {
             setErrorMessage("Failed to update user password. Please try again later.");
         } finally {

@@ -9,7 +9,6 @@ public class UpdateUserCommand : IRequest<Wrappers.Result.IResult<User>>
     public int Id { get; set; }
     
     [Required]
-    [Range(1, int.MaxValue)]
     public string Name { get; set; }
     
     [Required]
