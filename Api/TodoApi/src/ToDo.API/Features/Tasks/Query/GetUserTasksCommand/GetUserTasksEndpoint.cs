@@ -1,8 +1,7 @@
 ﻿using MediatR;
-using ToDo.API.Endpoints.Base;
-using ToDo.API.Features.Tasks.Query.GetUserTasksCommand;
+using ToDo.API.Features.Commons;
 
-namespace ToDo.API.Endpoints.Tasks;
+namespace ToDo.API.Features.Tasks.Query.GetUserTasksCommand;
 
 public class GetUserTasksEndpoint : BaseEndpoint<GetUserTasksCommand>
 {

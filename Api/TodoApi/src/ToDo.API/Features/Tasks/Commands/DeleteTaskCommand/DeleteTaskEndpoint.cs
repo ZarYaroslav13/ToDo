@@ -1,13 +1,12 @@
 ﻿using MediatR;
-using ToDo.API.Endpoints.Base;
-using ToDo.API.Features.Tasks.Query.GetUserTaskQuery;
+using ToDo.API.Features.Commons;
 
-namespace ToDo.API.Endpoints.Tasks;
+namespace ToDo.API.Features.Tasks.Commands.DeleteTaskCommand;
 
-public class GetUserTaskEndpoint : BaseEndpoint<GetUserTaskQuery>
+public class DeleteTaskEndpoint :  BaseEndpoint<DeleteTaskCommand>
 {
     public override string EndpointUrl { get; } = "/tasks/{id:int}";
-    public override EndpointHttpMethod EndpointHttpMethod { get; } = EndpointHttpMethod.Get;
+    public override EndpointHttpMethod EndpointHttpMethod { get; } = EndpointHttpMethod.Delete;
     
     protected override Delegate ConfigureHandler()
     {

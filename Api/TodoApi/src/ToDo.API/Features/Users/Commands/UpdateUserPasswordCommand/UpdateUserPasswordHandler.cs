@@ -1,20 +1,34 @@
 ﻿using MediatR;
-using ToDo.API.Features.Users.Services.UserService;
+using ToDo.API.Features.Commons;
+using ToDo.API.Infrastructure;
+using ToDo.API.Wrappers.Result;
 using IResult = ToDo.API.Wrappers.Result.IResult;
 
 namespace ToDo.API.Features.Users.Commands.UpdateUserPasswordCommand;
 
-public class UpdateUserPasswordHandler : IRequestHandler<UpdateUserPasswordCommand, IResult>
+public class UpdateUserPasswordHandler : BaseRequestHandler, IRequestHandler<UpdateUserPasswordCommand, IResult>
 {
-    private readonly IUserService _userService;
-
-    public UpdateUserPasswordHandler(IUserService userService)
+    private readonly AppDbContext _context;
+    
+    public UpdateUserPasswordHandler(AppDbContext context)
     {
-        _userService = userService ?? throw new ArgumentNullException(nameof(userService));;
+        _context = context;
     }
     
     public async Task<IResult> Handle(UpdateUserPasswordCommand request, CancellationToken cancellationToken)
     {
-        return await _userService.UpdatePassword(request.UserId, request.OldPassword, request.NewPassword);
+        return await ExecuteAsync(async () =>
+        {
+            var existedUser = await _context.Users.FindAsync(request.UserId);
+            
+            if(existedUser.Password != request.OldPassword)
+                throw new ArgumentException("Passwords do not match");
+            
+            existedUser.Password = request.NewPassword;
+
+            await _context.SaveChangesAsync();
+            
+            return Result.Success("User password updated successfully");
+        });
     }
 }

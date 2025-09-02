@@ -1,8 +1,6 @@
-﻿using MediatR;
-using ToDo.API.Endpoints.Base;
-using ToDo.API.Features.Tasks.Commands.UpdateTaskCommand;
+﻿using ToDo.API.Features.Commons;
 
-namespace ToDo.API.Endpoints.Tasks;
+namespace ToDo.API.Features.Tasks.Commands.UpdateTaskCommand;
 
 public class UpdateTaskEndpoint : BaseEndpoint<UpdateTaskCommand>
 {

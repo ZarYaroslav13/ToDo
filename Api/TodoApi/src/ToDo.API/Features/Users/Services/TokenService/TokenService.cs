@@ -1,22 +1,20 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using ToDo.API.Features.Commons;
-using ToDo.API.Features.Users.Services.UserService;
 using ToDo.API.Infrastructure.Entities;
 
 namespace ToDo.API.Features.Users.Services.TokenService;
 
-public class TokenService : BaseService, ITokenService
+public class TokenService
 {
     private readonly AuthOptions _authOptions;
 
     public TokenService(IOptions<AuthOptions> authOptions)
     {
         ArgumentNullException.ThrowIfNull(authOptions);
-        _authOptions = authOptions.Value ?? throw new ArgumentNullException(nameof(authOptions.Value));
+        _authOptions = authOptions.Value;
     }
 
     public string CreateToken(ClaimsIdentity identity)

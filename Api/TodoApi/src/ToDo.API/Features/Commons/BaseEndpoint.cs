@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using IResult = Microsoft.AspNetCore.Http.IResult;
 
-namespace ToDo.API.Endpoints.Base;
+namespace ToDo.API.Features.Commons;
 
 public abstract class BaseEndpoint<TRequest> : IEndpoint
 {

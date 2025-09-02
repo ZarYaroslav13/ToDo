@@ -1,20 +1,38 @@
 ﻿using MediatR;
-using ToDo.API.Features.Users.Services.UserService;
+using Microsoft.EntityFrameworkCore;
+using ToDo.API.Features.Commons;
+using ToDo.API.Features.Users.Services.TokenService;
+using ToDo.API.Infrastructure;
 using ToDo.API.Wrappers.Result;
 
 namespace ToDo.API.Features.Users.Commands.LoginUserCommand;
 
-public class LoginUserHandler : IRequestHandler<LoginUserCommand, Result<string>>
+public class LoginUserHandler : BaseRequestHandler, IRequestHandler<LoginUserCommand, Result<string>>
 {
-    private readonly IUserService _userService;
+    private readonly AppDbContext _context;
+    private readonly TokenService _tokenService;
     
-    public LoginUserHandler(IUserService userService)
+    public LoginUserHandler(AppDbContext context, TokenService tokenService)
     {
-        _userService = userService ?? throw new ArgumentNullException(nameof(userService));;
+        _context = context;
+        _tokenService = tokenService;
     }
     
     public async Task<Result<string>> Handle(LoginUserCommand request, CancellationToken cancellationToken)
     {
-        return await _userService.Login(request.Email, request.Password);
+        return await ExecuteAsync(async () =>
+        {
+            var user = await _context.Users
+                                .FirstOrDefaultAsync(u => u.Email == request.Email && u.Password == request.Password, cancellationToken);
+
+            if (user == null)
+                return Result<string>.Fail(message: "email or password wrong");
+
+            var identity = _tokenService.GetUserIdentity(user);
+            
+            var token = _tokenService.CreateToken(identity); 
+            
+            return Result<string>.Success(data:token, message:"Logged successfully");
+        });
     }
 }

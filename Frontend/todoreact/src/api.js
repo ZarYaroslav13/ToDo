@@ -67,10 +67,6 @@ export const api = {
             return http.get(`tasks/users/${userId}`);
         },
 
-        getUserTask(id){
-            return http.get(`tasks/${id}`);
-        },
-
         create(data){
             return http.post(`tasks`, data);
         },

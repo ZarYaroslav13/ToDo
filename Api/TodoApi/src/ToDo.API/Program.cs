@@ -1,12 +1,11 @@
 using Microsoft.OpenApi.Models;
-using ToDo.API.Endpoints;
 using ToDo.API.Extensions.HostBuilder;
 using ToDo.API.Extensions.Middlewares;
+using ToDo.API.Features.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Configure();
-builder.AddServices();
+builder.AddApiServices();
 
 // Add services to the container.
 builder.Services.AddProblemDetails();
@@ -47,13 +46,8 @@ var app = builder.Build();
 
 using var scope = app.Services.CreateScope();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment() || app.Environment.IsProduction())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-
-}
+app.UseSwagger();
+app.UseSwaggerUI();
 
 app.UseApplicationMiddleware();
 

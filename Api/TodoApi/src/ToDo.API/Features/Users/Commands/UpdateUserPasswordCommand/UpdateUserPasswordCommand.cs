@@ -1,10 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using MediatR;
-using ToDo.API.Infrastructure.Entities;
+using IResult = ToDo.API.Wrappers.Result.IResult;
 
 namespace ToDo.API.Features.Users.Commands.UpdateUserPasswordCommand;
 
-public class UpdateUserPasswordCommand : IRequest<Wrappers.Result.IResult>
+public class UpdateUserPasswordCommand : IRequest<IResult>
 {
     [Required]
     [Range(1, int.MaxValue)]

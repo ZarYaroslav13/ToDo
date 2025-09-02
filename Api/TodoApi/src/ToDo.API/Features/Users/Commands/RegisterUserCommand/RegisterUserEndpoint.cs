@@ -1,7 +1,6 @@
-﻿using ToDo.API.Endpoints.Base;
-using ToDo.API.Features.Users.Commands.RegisterUserCommand;
+﻿using ToDo.API.Features.Commons;
 
-namespace ToDo.API.Endpoints.Authorization;
+namespace ToDo.API.Features.Users.Commands.RegisterUserCommand;
 
 public class RegisterUserEndpoint : BaseEndpoint<RegisterUserCommand>
 {

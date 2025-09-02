@@ -1,20 +1,31 @@
 ﻿using MediatR;
-using ToDo.API.Features.Tasks.Services.UserTasksService;
+using ToDo.API.Features.Commons;
+using ToDo.API.Infrastructure;
+using ToDo.API.Wrappers.Result;
 using IResult = ToDo.API.Wrappers.Result.IResult;
 
 namespace ToDo.API.Features.Tasks.Commands.DeleteTaskCommand;
 
-public class DeleteTaskHandler :  IRequestHandler<DeleteTaskCommand, IResult>
+public class DeleteTaskHandler : BaseRequestHandler,  IRequestHandler<DeleteTaskCommand, IResult>
 {
-    private readonly IUserTaskService  _userTaskService;
+    private readonly AppDbContext _context;
 
-    public DeleteTaskHandler(IUserTaskService userTaskService)
+    public DeleteTaskHandler(AppDbContext context)
     {
-        _userTaskService = userTaskService ?? throw new ArgumentNullException(nameof(userTaskService));;
+        _context = context;
     }
 
     public async Task<IResult> Handle(DeleteTaskCommand request, CancellationToken cancellationToken)
     {
-        return await _userTaskService.DeleteTaskAsync(request.Id);
+        return await ExecuteAsync(async () =>
+        {
+            var task = await _context.Tasks.FindAsync(request.Id);
+
+            _context.Tasks.Remove(task);
+
+            await _context.SaveChangesAsync();
+            
+            return Result.Success("UserTask deleted successfully");
+        });
     }
 }

@@ -1,10 +1,11 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using MediatR;
 using ToDo.API.Infrastructure.Entities;
+using ToDo.API.Wrappers.Result;
 
 namespace ToDo.API.Features.Users.Commands.UpdateUserCommand;
 
-public class UpdateUserCommand : IRequest<Wrappers.Result.IResult<User>>
+public class UpdateUserCommand : IRequest<IResult<User>>
 {
     public int Id { get; set; }
     

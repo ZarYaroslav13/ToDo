@@ -1,20 +1,33 @@
 ﻿using MediatR;
-using ToDo.API.Features.Users.Services.UserService;
+using ToDo.API.Features.Commons;
+using ToDo.API.Infrastructure;
 using ToDo.API.Infrastructure.Entities;
+using ToDo.API.Wrappers.Result;
 
 namespace ToDo.API.Features.Users.Commands.UpdateUserCommand;
 
-public class UpdateUserHandler : IRequestHandler<UpdateUserCommand, Wrappers.Result.IResult<User>>
+public class UpdateUserHandler : BaseRequestHandler, IRequestHandler<UpdateUserCommand, IResult<User>>
 {
-    private readonly IUserService _userService;
-
-    public UpdateUserHandler(IUserService userService)
+    private readonly AppDbContext _context;
+    
+    public UpdateUserHandler(AppDbContext context)
     {
-        _userService = userService ?? throw new ArgumentNullException(nameof(userService));;
+        _context = context;
     }
 
-    public async Task<Wrappers.Result.IResult<User>> Handle(UpdateUserCommand request, CancellationToken cancellationToken)
+    public async Task<IResult<User>> Handle(UpdateUserCommand request, CancellationToken cancellationToken)
     {
-        return await _userService.Update(request.ToUser());
+        return await ExecuteAsync(async () =>
+        {
+            var existedUser = await _context.Users.FindAsync(request.Id);
+            
+            existedUser.Name = request.Name;
+            existedUser.Email = request.Email;
+            existedUser.Surname = request.Surname;
+
+            await _context.SaveChangesAsync();
+            
+            return Result<User>.Success(request.ToUser(),"User updated successfully");
+        });
     }
 }

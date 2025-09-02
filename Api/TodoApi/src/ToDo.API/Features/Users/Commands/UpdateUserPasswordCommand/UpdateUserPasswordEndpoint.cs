@@ -1,7 +1,6 @@
-﻿using ToDo.API.Endpoints.Base;
-using ToDo.API.Features.Users.Commands.UpdateUserPasswordCommand;
+﻿using ToDo.API.Features.Commons;
 
-namespace ToDo.API.Endpoints.Users;
+namespace ToDo.API.Features.Users.Commands.UpdateUserPasswordCommand;
 
 public class UpdateUserPasswordEndpoint : BaseEndpoint<UpdateUserPasswordCommand>
 {

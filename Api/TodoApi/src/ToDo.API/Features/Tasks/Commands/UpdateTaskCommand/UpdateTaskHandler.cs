@@ -1,21 +1,34 @@
 ﻿using MediatR;
-using ToDo.API.Features.Tasks.Services.UserTasksService;
+using ToDo.API.Features.Commons;
+using ToDo.API.Infrastructure;
 using ToDo.API.Infrastructure.Entities;
 using ToDo.API.Wrappers.Result;
 
 namespace ToDo.API.Features.Tasks.Commands.UpdateTaskCommand;
 
-public class UpdateTaskHandler : IRequestHandler<UpdateTaskCommand, Result<UserTask>>
+public class UpdateTaskHandler : BaseRequestHandler, IRequestHandler<UpdateTaskCommand, Result<UserTask>>
 {
-    private readonly IUserTaskService  _userTaskService;
+    private readonly AppDbContext _context;
 
-    public UpdateTaskHandler(IUserTaskService userTaskService)
+    public UpdateTaskHandler(AppDbContext context)
     {
-        _userTaskService = userTaskService ?? throw new ArgumentNullException(nameof(userTaskService));;
+        _context = context;
     }
 
     public async Task<Result<UserTask>> Handle(UpdateTaskCommand request, CancellationToken cancellationToken)
     {
-        return await _userTaskService.UpdateTaskAsync(request.ToTask());
+        return await ExecuteAsync(async () =>
+        {
+            var existedTask = await _context.Tasks.FindAsync(request.Id);
+            
+            existedTask.Title = request.Title;
+            existedTask.Description = request.Description;
+            existedTask.Deadline = request.Deadline;
+            existedTask.Priority = request.Priority;
+
+            await _context.SaveChangesAsync();
+            
+            return Result<UserTask>.Success(existedTask,"User task updated successfully");
+        });
     }
 }

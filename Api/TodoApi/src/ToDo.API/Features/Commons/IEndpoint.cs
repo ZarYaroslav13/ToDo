@@ -1,4 +1,4 @@
-﻿namespace ToDo.API.Endpoints.Base;
+﻿namespace ToDo.API.Features.Commons;
 
 public interface IEndpoint
 {

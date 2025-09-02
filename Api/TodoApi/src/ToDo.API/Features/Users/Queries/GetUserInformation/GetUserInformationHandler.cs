@@ -1,21 +1,38 @@
 ﻿using MediatR;
-using ToDo.API.Features.Users.Services.UserService;
+using Microsoft.EntityFrameworkCore;
+using ToDo.API.Features.Commons;
+using ToDo.API.Infrastructure;
 using ToDo.API.Infrastructure.Entities;
 using ToDo.API.Wrappers.Result;
 
 namespace ToDo.API.Features.Users.Queries.GetUserInformation;
 
-public class GetUserInformationHandler : IRequestHandler<GetUserInformationQuery, Result<User>>
+public class GetUserInformationHandler : BaseRequestHandler, IRequestHandler<GetUserInformationQuery, Result<User>>
 {
-    private readonly IUserService _userService;
+    private readonly AppDbContext _context;
     
-    public GetUserInformationHandler(IUserService userService)
+    public GetUserInformationHandler(AppDbContext context)
     {
-        _userService = userService ?? throw new ArgumentNullException(nameof(userService));;
+        _context = context;
     }
     
     public async Task<Result<User>> Handle(GetUserInformationQuery request, CancellationToken cancellationToken)
     {
-        return await _userService.GetInformation(request.UserId);
+        return await ExecuteAsync(async () =>
+        {
+            var user = await _context.Users
+                .FirstOrDefaultAsync(u => u.Id == request.UserId);
+
+            if(user == null)
+                throw new ArgumentException("User not found");
+            
+            return Result<User>.Success(new User()
+            {
+                Id = user.Id,
+                Name = user.Name,
+                Surname = user.Surname,
+                Email = user.Email,
+            });
+        });
     }
 }

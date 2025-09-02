@@ -1,5 +1,4 @@
-﻿using ToDo.API.Endpoints;
-using ToDo.API.Endpoints.Base;
+﻿using ToDo.API.Features.Commons;
 
 namespace ToDo.API.Extensions.Endpoints;
 
