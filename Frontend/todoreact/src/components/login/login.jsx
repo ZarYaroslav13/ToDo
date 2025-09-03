@@ -1,4 +1,7 @@
 import styles from "./login.module.css";
+import { Typography, Link } from "@mui/material";
+import { Link as RouterLink } from "react-router-dom";
+import { UrlAddresses } from "../router/router";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { useLoginViewModel } from "./loginViewModel";
 
@@ -34,6 +37,15 @@ export const Login = () => {
                 <span className={styles.ToggleIcon} onClick={vm.handleToggle}>
                     {vm.showPassword ? <FaEye size={20}/> : <FaEyeSlash size={20}/> }
                 </span>
+            </div>
+            <Typography variant="body2" sx={{ mt: 2 }}>
+                Don’t have an account yet?{" "}
+                <Link component={RouterLink} to={UrlAddresses.Register}>
+                    Register
+                </Link>
+            </Typography>
+            <div>
+
             </div>
 
             <button className={styles.Button} type="submit">

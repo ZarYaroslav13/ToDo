@@ -79,7 +79,7 @@ export const Register = () => {
                     type="email"
                     name="emailInput"
                     placeholder="Email"
-                    autoComplete="on"
+                    autoComplete="off"
                     value={registerModel.email}
                     onChange={(e) => handleRegisterModelChange("email", e.target.value)}
                 />
@@ -92,7 +92,7 @@ export const Register = () => {
                     placeholder="Password"
                     value={registerModel.password}
                     onChange={(e) => handleRegisterModelChange("password", e.target.value)}
-                    autoComplete="current-password"
+                    autoComplete="off"
                 />
                 <span className={styles.ToggleIcon} onClick={handlePasswordVisibilityToggle}>
                     {showPassword ? <FaEye size={20}/> : <FaEyeSlash size={20}/>}
