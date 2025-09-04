@@ -1,40 +1,31 @@
 import { useState } from "react";
-import { useAuth } from "../authprovider/authprovider";
+import { useAuth } from "../authprovider/authProvider";
 import { useNavigate } from "react-router-dom";
+import { useForm } from "react-hook-form"
 import { UrlAddresses } from "../router/router";
+import {useSnackBar} from "../snackbarProvider/snackbarProvider";
 
 export function useLoginViewModel() {
     const auth = useAuth();
     const navigate = useNavigate();
+    const snackbar = useSnackBar()
 
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [showPassword, setShowPassword] = useState(false);
+    const {register, handleSubmit  } = useForm()
     const [error, setError] = useState(null);
 
-    const handleToggle = () => {
-        setShowPassword(!showPassword);
-    };
-
-    const handleSubmit = async (e) => {
-        e.preventDefault();
+    const onSubmit = async (data) => {
         setError(null);
         try {
-            await auth.signIn({ email, password });
+            await auth.signIn( data );
             navigate(UrlAddresses.Profile);
         } catch (err) {
-            setError(err.message || "Login failed");
+            snackbar.showSnackbar(err.message || "Login failed", "error");
         }
     };
 
     return {
-        email,
-        setEmail,
-        password,
-        setPassword,
-        showPassword,
-        handleToggle,
-        handleSubmit,
+        register,
+        handleSubmit: handleSubmit(onSubmit),
         error,
         loading: auth.loading
     };

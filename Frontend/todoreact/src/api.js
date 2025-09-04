@@ -24,6 +24,10 @@ http.interceptors.request.use((config) => {
 
 http.interceptors.response.use(({ data}) => data);
 
+const domains = {
+    tasks: "tasks",
+}
+
 export const api = {
     authorization:{
         register(data){

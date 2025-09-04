@@ -8,7 +8,7 @@ import {
     Button,
     FormHelperText,
 } from "@mui/material";
-import { useAuth } from "../../authprovider/authprovider";
+import { useAuth } from "../../authprovider/authProvider";
 import { useUserDomain } from "../../../hooks/api/users";
 
 export function ChangePasswordDialog({ open, onClose, onSave }) {

@@ -101,7 +101,9 @@ public static class AddServicesConfigurationHostBuilderExtensions
 
     private static IServiceCollection AddServices(this IServiceCollection services)
     {
-        services.AddScoped<TokenService>();
+        services
+            .AddScoped<TokenService>()
+            .AddHttpContextAccessor();
         
         return services;
     }

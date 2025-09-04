@@ -1,52 +1,23 @@
 import styles from "./register.module.css";
-import { useState } from "react";
-import { FaEye } from 'react-icons/fa';
-import { FaEyeSlash } from 'react-icons/fa';
+import {useRegisterViewModel} from "./registerViewModel";
+import {PasswordInput} from "../passwordInput/passwordInput";
+import {Link, Typography} from "@mui/material";
+import {Link as RouterLink} from "react-router";
+import {UrlAddresses} from "../router/router";
 
 export const Register = () => {
-    const [registerModel, setRegisterModel] = useState({
-        name: "",
-        surname: "",
-        email: "",
-        password: "",
-        confirmPassword: "",
-    })
-    const [type, setType] = useState("password");
-    const [showPassword, setShowPassword] = useState(false);
-
-    const [typeConfirm, setTypeConfirm] = useState("password");
-    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-
-    const handlePasswordVisibilityToggle = () => {
-        if(showPassword) {
-            setShowPassword(false);
-            setType("password");
-        } else {
-            setShowPassword(true);
-            setType("text");
-        }
-    }
-
-    const handleConfirmPasswordVisibilityToggle = () => {
-        if(showConfirmPassword) {
-            setShowConfirmPassword(false);
-            setTypeConfirm("password");
-        } else {
-            setShowConfirmPassword(true);
-            setTypeConfirm("text");
-        }
-    }
-
-    function handleRegisterModelChange(key, value) {
-        setRegisterModel((prevModel) => ({
-            ...prevModel,
-            [key]: value,
-        }));
-    }
+    const vm = useRegisterViewModel();
 
     return (
-        <form className={styles.Register}>
+        <form className={styles.Register} onSubmit={vm.handleSubmit}>
             <h1 className={styles.Title}><strong>Register</strong></h1>
+
+            <Typography variant="body2" sx={{ mt: 2 }}>
+                Already have an account ?{" "}
+                <Link component={RouterLink} to={UrlAddresses.Login}>
+                    Login
+                </Link>
+            </Typography>
 
             <div  className={styles.InputWrapper}>
                 <input
@@ -55,8 +26,7 @@ export const Register = () => {
                     type="string"
                     name="nameInput"
                     placeholder="Name"
-                    value={registerModel.name}
-                    onChange={(e) => handleRegisterModelChange("name", e.target.value)}
+                    {...vm.register("name")}
                 />
             </div>
 
@@ -67,8 +37,7 @@ export const Register = () => {
                     type="string"
                     name="surnameInput"
                     placeholder="Surname"
-                    value={registerModel.surname}
-                    onChange={(e) => handleRegisterModelChange("surname", e.target.value)}
+                    {...vm.register("surname")}
                 />
             </div>
 
@@ -80,39 +49,19 @@ export const Register = () => {
                     name="emailInput"
                     placeholder="Email"
                     autoComplete="off"
-                    value={registerModel.email}
-                    onChange={(e) => handleRegisterModelChange("email", e.target.value)}
+                    {...vm.register("email")}
                 />
             </div>
 
-            <div className={styles.InputWrapper}>
-                <input
-                    type={type}
-                    name="password"
-                    placeholder="Password"
-                    value={registerModel.password}
-                    onChange={(e) => handleRegisterModelChange("password", e.target.value)}
-                    autoComplete="off"
-                />
-                <span className={styles.ToggleIcon} onClick={handlePasswordVisibilityToggle}>
-                    {showPassword ? <FaEye size={20}/> : <FaEyeSlash size={20}/>}
-                </span>
-            </div>
+            <PasswordInput register={vm.register} />
 
-            <div className={styles.InputWrapper}>
-                <input
-                    type={typeConfirm}
-                    name="confirmPasswordInout"
-                    placeholder="Confirm password"
-                    value={registerModel.confirmPassword}
-                    onChange={(e) => handleRegisterModelChange("confirmPassword", e.target.value)}
-                />
-                <span className={styles.ToggleIcon} onClick={handleConfirmPasswordVisibilityToggle}>
-                    {showConfirmPassword ? <FaEye size={20}/> : <FaEyeSlash size={20}/>}
-                </span>
-            </div>
+            <PasswordInput register={vm.register}
+                           formProperty="confirmPassword"
+                           placeholder="Confirm password"/>
 
-            <button className={styles.Button} type="submit">Register</button>
+            <button className={styles.Button} type="submit">
+                {vm.loading ? "Registering in..." : "Register"}
+            </button>
         </form>
     );
 };

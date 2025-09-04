@@ -1,18 +1,17 @@
 import { useState, useEffect } from "react";
 import { useUserDomain } from "../../hooks/api/users";
 import { useTasksDomain } from "../../hooks/api/tasks";
-import { useAuth } from "../authprovider/authprovider";
+import { useAuth } from "../authprovider/authProvider";
+import {useSnackBar} from "../snackbarProvider/snackbarProvider";
 
 
 export function useProfileViewModel() {
     const users = useUserDomain();
     const tasksApi = useTasksDomain();
     const auth = useAuth();
+    const snackBar = useSnackBar();
 
     const [userInfo, setUserInfo] = useState(null);
-    const [snackbarOpen, setSnackbarOpen] = useState(false);
-    const [snackbarMessage, setSnackbarMessage] = useState("");
-    const [snackbarSeverity, setSnackbarSeverity] = useState("success");
 
     useEffect(() => {
         if (!auth.user?.Id) return;
@@ -22,23 +21,15 @@ export function useProfileViewModel() {
                 const data = await users.fetch(auth.user.Id);
                 const userTasks = await tasksApi.fetch(auth.user.Id);
                 setUserInfo({ ...data, tasks: userTasks });
-                showSnackbar(`Welcome, ${data.name}`, "success");
+                snackBar.showSnackbar(`Welcome, ${data.name}`);
             } catch (err) {
                 console.error(err);
-                showSnackbar("Failed to fetch user info", "error");
+                snackBar.showSnackbar("Failed to fetch user info", "error");
             }
         };
 
         fetchUser();
     }, [auth.user]);
-
-    const showSnackbar = (message, severity = "success") => {
-        setSnackbarMessage(message);
-        setSnackbarSeverity(severity);
-        setSnackbarOpen(true);
-    };
-
-    const closeSnackbar = () => setSnackbarOpen(false);
 
     const handleUpdatingUser = async (updatedUser) => {
         try {
@@ -46,12 +37,12 @@ export function useProfileViewModel() {
 
             if (result.succeeded) {
                 setUserInfo({...result.data, tasks: userInfo.tasks});
-                showSnackbar("Updated successfully user info", "success");
+                snackBar.showSnackbar("Updated successfully user info");
                 return result.data;
             }
         } catch (err) {
             console.error(err);
-            showSnackbar("Failed to update user info", "error");
+            snackBar.showSnackbar("Failed to update user info", "error");
         }
         return null;
     };
@@ -61,15 +52,15 @@ export function useProfileViewModel() {
             let result = await users.updatePassword(updatingForm);
 
             if (result) {
-                showSnackbar("Updated successfully user info", "success");
+                snackBar.showSnackbar("Updated successfully user info");
                 return result.data;
             }
         } catch (err) {
             console.error(err);
-            showSnackbar("Failed to update password", "error");
+            snackBar.showSnackbar("Failed to update password", "error");
         }
 
-        showSnackbar("Failed to update password", "error");
+        snackBar.showSnackbar("Failed to update password", "error");
         return null;
     };
 
@@ -78,7 +69,7 @@ export function useProfileViewModel() {
             const taskToAdd = { ...newTask, userId: auth.user.Id  };
             const createdTask = await tasksApi.create(taskToAdd);
             if (createdTask) {
-                showSnackbar("Task added successfully", "success");
+                snackBar.showSnackbar("Task added successfully");
                 setUserInfo(prev => ({
                     ...prev,
                     tasks: [...(prev?.tasks ?? []), createdTask]
@@ -87,7 +78,7 @@ export function useProfileViewModel() {
             }
         } catch (err) {
             console.error(err);
-            showSnackbar("Failed to add task", "error");
+            snackBar.showSnackbar("Failed to add task", "error");
         }
         return null;
     };
@@ -96,7 +87,7 @@ export function useProfileViewModel() {
         try {
             const result = await tasksApi.update(updatedTask);
             if (result) {
-                showSnackbar("Task updated successfully", "success");
+                snackBar.showSnackbar("Task updated successfully",);
                 setUserInfo(prev => ({
                     ...prev,
                     tasks: prev.tasks.map(t => t.id === result.id ? result : t)
@@ -105,7 +96,7 @@ export function useProfileViewModel() {
             }
         } catch (err) {
             console.error(err);
-            showSnackbar("Failed to update task", "error");
+            snackBar.showSnackbar("Failed to update task", "error");
         }
         return null;
     };
@@ -114,7 +105,7 @@ export function useProfileViewModel() {
         try {
             const result = await tasksApi.delete(taskId);
             if (result?.succeeded) {
-                showSnackbar("Task deleted successfully", "success");
+                snackBar.showSnackbar("Task deleted successfully");
                 setUserInfo(prev => ({
                     ...prev,
                     tasks: prev.tasks.filter(t => t.id !== taskId)
@@ -123,22 +114,18 @@ export function useProfileViewModel() {
             }
         } catch (err) {
             console.error(err);
-            showSnackbar("Failed to delete task", "error");
+            snackBar.showSnackbar("Failed to delete task", "error");
         }
         return false;
     };
 
     return {
         userInfo,
-        snackbarOpen,
-        snackbarMessage,
-        snackbarSeverity,
-        closeSnackbar,
+
         handleUpdatingUser,
         handleUpdatingPassword,
         updateTask,
         deleteTask,
-        addTask,
-        showSnackbar
+        addTask
     };
 }

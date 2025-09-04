@@ -16,7 +16,7 @@ export const Router = () => {
         <BrowserRouter>
             <Routes>
                 <Route path={UrlAddresses.Home} element={<Navigate to={UrlAddresses.Login} replace />} />
-                <Route path={UrlAddresses.Login} element={<Login />} />
+                <Route path={UrlAddresses.Login} element={<Login/>} />
                 <Route path={UrlAddresses.Register} element={<Register />} />
 
                 <Route
